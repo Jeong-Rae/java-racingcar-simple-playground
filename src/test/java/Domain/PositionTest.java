@@ -22,7 +22,7 @@ class PositionTest {
                 "100"
         })
         void 값이_0부터_100_사이면_위치를_생성합니다(int value) {
-            assertThatCode(() -> new Position(value))
+            assertThatCode(() -> Position.of(value))
                     .doesNotThrowAnyException();
         }
 
@@ -31,8 +31,8 @@ class PositionTest {
                 "-1",
                 "101"
         })
-        void 값이_0부터_100_사이가_아니면_IllegalArgumentException을_던집니다(int value) {
-            assertThatThrownBy(() -> new Position(value))
+        void 값이_0부터_100_사이가_아니면_예외를_발생시킵니다(int value) {
+            assertThatThrownBy(() -> Position.of(value))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
@@ -53,12 +53,12 @@ class PositionTest {
         void 영에서_advance를_호출하면_위치가_1이_됩니다() {
             var position = Position.start().advance();
 
-            assertThat(position).isEqualTo(new Position(1));
+            assertThat(position).isEqualTo(Position.of(1));
         }
 
         @Test
-        void 위치가_100이면_advance를_호출할_때_IllegalArgumentException을_던집니다() {
-            var position = new Position(100);
+        void 위치가_100이면_advance를_호출할_때_예외를_발생시킵니다() {
+            var position = Position.of(100);
 
             assertThatThrownBy(position::advance)
                     .isInstanceOf(IllegalArgumentException.class);

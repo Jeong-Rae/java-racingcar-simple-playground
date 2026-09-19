@@ -27,7 +27,7 @@ class RaceTest {
         ) {
             var race = new Race(racingCars(decisions));
 
-            race.run(new Round(round));
+            race.run(Round.of(round));
 
             assertThat(race.winners())
                     .extracting(car -> car.name().value())
@@ -37,14 +37,14 @@ class RaceTest {
         @Test
         void 100라운드에서_항상_전진하면_최종_위치가_100이_됩니다() {
             var car = new RacingCar(
-                    new Name("pobi"),
+                    Name.of("RYAN"),
                     new TestAdvanceDecider(Collections.nCopies(100, true))
             );
             var race = new Race(new RacingCars(List.of(car)));
 
-            race.run(new Round(100));
+            race.run(Round.of(100));
 
-            assertThat(car.position()).isEqualTo(new Position(100));
+            assertThat(car.position()).isEqualTo(Position.of(100));
         }
     }
 
@@ -57,7 +57,7 @@ class RaceTest {
                                 List.of(true, false, false),
                                 List.of(false, false, false)
                         ),
-                        List.of("pobi")
+                        List.of("RYAN")
                 ),
                 arguments(
                         3,
@@ -66,13 +66,13 @@ class RaceTest {
                                 List.of(true, true, false),
                                 List.of(false, false, false)
                         ),
-                        List.of("pobi", "crong")
+                        List.of("RYAN", "MUZI")
                 )
         );
     }
 
     private static RacingCars racingCars(List<List<Boolean>> decisions) {
-        var names = List.of("pobi", "crong", "honux");
+        var names = List.of("RYAN", "MUZI", "춘식");
         var cars = IntStream.range(0, decisions.size())
                 .mapToObj(index -> racingCar(names.get(index), decisions.get(index)))
                 .toList();
@@ -81,6 +81,6 @@ class RaceTest {
     }
 
     private static RacingCar racingCar(String name, List<Boolean> decisions) {
-        return new RacingCar(new Name(name), new TestAdvanceDecider(decisions));
+        return new RacingCar(Name.of(name), new TestAdvanceDecider(decisions));
     }
 }

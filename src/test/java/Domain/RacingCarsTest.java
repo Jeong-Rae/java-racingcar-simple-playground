@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,14 +20,14 @@ class RacingCarsTest {
 
         @Test
         void advance를_호출하면_각_자동차가_자신의_판단_결과에_따라_전진합니다() {
-            var pobi = new RacingCar(new Name("pobi"), new TestAdvanceDecider(true));
-            var crong = new RacingCar(new Name("crong"), new TestAdvanceDecider(false));
-            var cars = new RacingCars(List.of(pobi, crong));
+            var ryan = new RacingCar(Name.of("RYAN"), new TestAdvanceDecider(true));
+            var muzi = new RacingCar(Name.of("MUZI"), new TestAdvanceDecider(false));
+            var cars = new RacingCars(List.of(ryan, muzi));
 
             cars.advance();
 
-            assertThat(pobi.position()).isEqualTo(new Position(1));
-            assertThat(crong.position()).isEqualTo(Position.ZERO);
+            assertThat(ryan.position()).isEqualTo(Position.of(1));
+            assertThat(muzi.position()).isEqualTo(Position.ZERO);
         }
     }
 
@@ -50,7 +51,7 @@ class RacingCarsTest {
     }
 
     @Test
-    void 자동차_목록이_비어_있으면_IllegalArgumentException을_던집니다() {
+    void 자동차_목록이_비어_있으면_예외를_발생시킵니다() {
         assertThatThrownBy(() -> new RacingCars(List.of()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -63,7 +64,7 @@ class RacingCarsTest {
                                 List.of(true, false),
                                 List.of(false, false)
                         ),
-                        List.of("pobi")
+                        List.of("RYAN")
                 ),
                 arguments(
                         List.of(
@@ -71,16 +72,16 @@ class RacingCarsTest {
                                 List.of(true, false),
                                 List.of(false, false)
                         ),
-                        List.of("pobi", "crong")
+                        List.of("RYAN", "MUZI")
                 )
         );
     }
 
     private static RacingCars cars(List<List<Boolean>> decisions) {
-        var names = List.of("pobi", "crong", "honux");
-        var cars = java.util.stream.IntStream.range(0, decisions.size())
+        var names = List.of("RYAN", "MUZI", "춘식");
+        var cars = IntStream.range(0, decisions.size())
                 .mapToObj(index -> new RacingCar(
-                        new Name(names.get(index)),
+                        Name.of(names.get(index)),
                         new TestAdvanceDecider(decisions.get(index))
                 ))
                 .toList();

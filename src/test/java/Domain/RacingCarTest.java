@@ -21,11 +21,11 @@ class RacingCarTest {
                 List<Boolean> decisions,
                 int expectedPosition
         ) {
-            var car = new RacingCar(new Name("pobi"), new TestAdvanceDecider(decisions));
+            var car = new RacingCar(Name.of("라이언"), new TestAdvanceDecider(decisions));
 
             decisions.forEach(ignored -> car.advance());
 
-            assertThat(car.position()).isEqualTo(new Position(expectedPosition));
+            assertThat(car.position()).isEqualTo(Position.of(expectedPosition));
         }
     }
 
