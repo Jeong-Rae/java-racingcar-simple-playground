@@ -8,7 +8,7 @@ import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class PositionTest {
 
@@ -16,12 +16,7 @@ class PositionTest {
     class 위치를_생성할_때 {
 
         @ParameterizedTest
-        @CsvSource({
-                "0",
-                "1",
-                "99",
-                "100"
-        })
+        @ValueSource(ints = {0, 1, 99, 100})
         void 값이_0부터_100_사이면_위치를_생성합니다(int value) {
             ThrowingCallable executable = () -> Position.of(value);
 
@@ -30,10 +25,7 @@ class PositionTest {
         }
 
         @ParameterizedTest
-        @CsvSource({
-                "-1",
-                "101"
-        })
+        @ValueSource(ints = {-1, 101})
         void 값이_0부터_100_사이가_아니면_예외를_발생시킵니다(int value) {
             ThrowingCallable executable = () -> Position.of(value);
 

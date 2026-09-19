@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
@@ -142,13 +143,23 @@ class RacingTest {
 
         @ParameterizedTest
         @ValueSource(ints = {1, 2, 100})
+        void 마지막_라운드_직전이면_RACING_상태를_유지합니다(int rounds) {
+            var racing = racing(rounds, false);
+            racing.start();
+
+            IntStream.range(0, rounds - 1).forEach(ignored -> racing.advance());
+            var actualStatus = racing.status();
+
+            assertThat(actualStatus).isEqualTo(RacingStatus.RACING);
+        }
+
+        @ParameterizedTest
+        @ValueSource(ints = {1, 2, 100})
         void 마지막_라운드를_완료하면_FINISHED_상태가_됩니다(int rounds) {
             var racing = racing(rounds, false);
             racing.start();
 
-            while (racing.status() == RacingStatus.RACING) {
-                racing.advance();
-            }
+            IntStream.range(0, rounds).forEach(ignored -> racing.advance());
             var actualStatus = racing.status();
 
             assertThat(actualStatus).isEqualTo(RacingStatus.FINISHED);
@@ -181,7 +192,8 @@ class RacingTest {
         ) {
             var racing = racing(2, decisions);
 
-            finish(racing);
+            racing.start();
+            IntStream.range(0, 2).forEach(ignored -> racing.advance());
             var actualNames = racing.winners().stream().map(Name::value).toList();
 
             assertThat(actualNames).containsExactlyElementsOf(expectedNames);
@@ -205,7 +217,8 @@ class RacingTest {
         var racing = racing(100, true);
         var expectedPosition = Position.of(100);
 
-        finish(racing);
+        racing.start();
+        IntStream.range(0, 100).forEach(ignored -> racing.advance());
         var actualPosition = racing.positions().get(Name.of("RYAN"));
 
         assertThat(actualPosition).isEqualTo(expectedPosition);
@@ -255,12 +268,5 @@ class RacingTest {
 
         racing.advance();
         return racing;
-    }
-
-    private static void finish(Racing racing) {
-        racing.start();
-        while (racing.status() == RacingStatus.RACING) {
-            racing.advance();
-        }
     }
 }

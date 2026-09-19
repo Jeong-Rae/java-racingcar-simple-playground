@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.random.RandomGenerator;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -28,6 +29,18 @@ class RandomAdvanceDeciderTest {
 
             assertThat(actual).isEqualTo(expected);
         }
+
+        @Test
+        void shouldAdvance를_호출하면_0부터_9_범위의_난수를_요청합니다() {
+            var expectedBound = 10;
+            var randomGenerator = new RecordingRandomGenerator(0);
+            var decider = new RandomAdvanceDecider(randomGenerator);
+
+            decider.shouldAdvance();
+            var actualBound = randomGenerator.bound();
+
+            assertThat(actualBound).isEqualTo(expectedBound);
+        }
     }
 
     private record FixedRandomGenerator(int value) implements RandomGenerator {
@@ -40,6 +53,31 @@ class RandomAdvanceDeciderTest {
         @Override
         public long nextLong() {
             return value;
+        }
+    }
+
+    private static final class RecordingRandomGenerator implements RandomGenerator {
+
+        private final int value;
+        private int bound;
+
+        private RecordingRandomGenerator(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public int nextInt(int bound) {
+            this.bound = bound;
+            return value;
+        }
+
+        @Override
+        public long nextLong() {
+            return value;
+        }
+
+        int bound() {
+            return bound;
         }
     }
 }

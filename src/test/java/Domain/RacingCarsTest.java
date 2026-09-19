@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -37,6 +38,15 @@ class RacingCarsTest {
         @Test
         void 자동차_이름_목록이_null이면_예외를_발생시킵니다() {
             List<Name> names = null;
+            ThrowingCallable executable = () -> new RacingCars(names);
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(NullPointerException.class);
+        }
+
+        @Test
+        void 자동차_이름_목록에_null이_포함되면_예외를_발생시킵니다() {
+            var names = Arrays.asList(Name.of("RYAN"), null);
             ThrowingCallable executable = () -> new RacingCars(names);
 
             assertThatThrownBy(executable)
