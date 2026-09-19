@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class RacingTest {
@@ -19,16 +20,30 @@ class RacingTest {
     class 경주를_준비할_때 {
 
         @Test
-        void ready로_생성하면_READY_상태와_0개의_완료_라운드를_가집니다() {
+        void ready로_생성하면_READY_상태가_됩니다() {
             var racing = racing(3, false);
             var expectedStatus = RacingStatus.READY;
-            var expectedCompletedRounds = 0;
 
             var actualStatus = racing.status();
-            var actualCompletedRounds = racing.completedRounds();
 
             assertThat(actualStatus).isEqualTo(expectedStatus);
+        }
+
+        @Test
+        void ready로_생성하면_완료한_라운드가_0입니다() {
+            var racing = racing(3, false);
+            var expectedCompletedRounds = 0;
+
+            var actualCompletedRounds = racing.completedRounds();
+
             assertThat(actualCompletedRounds).isEqualTo(expectedCompletedRounds);
+        }
+
+        @ParameterizedTest
+        @MethodSource("Domain.RacingTest#필수_구성값이_null인_케이스")
+        void 필수_구성값이_null이면_예외를_발생시킵니다(ThrowingCallable executable) {
+            assertThatThrownBy(executable)
+                    .isInstanceOf(NullPointerException.class);
         }
     }
 
@@ -46,10 +61,12 @@ class RacingTest {
             assertThat(actualStatus).isEqualTo(expectedStatus);
         }
 
-        @Test
-        void READY가_아닌_상태에서_start를_호출하면_예외를_발생시킵니다() {
-            var racing = racing(3, false);
-            racing.start();
+        @ParameterizedTest
+        @EnumSource(value = RacingStatus.class, names = {"RACING", "FINISHED"})
+        void READY가_아닌_상태에서_start를_호출하면_예외를_발생시킵니다(
+                RacingStatus status
+        ) {
+            var racing = racingIn(status);
             ThrowingCallable executable = racing::start;
 
             assertThatThrownBy(executable)
@@ -61,7 +78,7 @@ class RacingTest {
     class 한_라운드를_진행할_때 {
 
         @Test
-        void RACING_상태에서_advance를_호출하면_한_라운드를_진행합니다() {
+        void RACING_상태에서_advance를_호출하면_위치를_한_라운드만큼_변경합니다() {
             var racing = racing(3, true);
             racing.start();
             var expectedPosition = Position.of(1);
@@ -70,39 +87,59 @@ class RacingTest {
             var actualPosition = racing.positions().get(Name.of("RYAN"));
 
             assertThat(actualPosition).isEqualTo(expectedPosition);
-            assertThat(racing.completedRounds()).isEqualTo(1);
         }
 
         @Test
-        void 마지막_라운드를_완료하면_FINISHED_상태가_됩니다() {
-            var racing = racing(2, true);
+        void RACING_상태에서_advance를_호출하면_완료한_라운드가_1_증가합니다() {
+            var racing = racing(3, false);
             racing.start();
+            var expectedCompletedRounds = 1;
 
             racing.advance();
-            racing.advance();
+            var actualCompletedRounds = racing.completedRounds();
+
+            assertThat(actualCompletedRounds).isEqualTo(expectedCompletedRounds);
+        }
+
+        @ParameterizedTest
+        @EnumSource(value = RacingStatus.class, names = {"READY", "FINISHED"})
+        void RACING이_아닌_상태에서_advance를_호출하면_예외를_발생시킵니다(
+                RacingStatus status
+        ) {
+            var racing = racingIn(status);
+            ThrowingCallable executable = racing::advance;
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(IllegalStateException.class);
+        }
+
+        @ParameterizedTest
+        @MethodSource("Domain.RacingTest#마지막_라운드_케이스")
+        void 마지막_라운드를_완료하면_FINISHED_상태가_됩니다(int rounds) {
+            var racing = racing(rounds, false);
+            racing.start();
+
+            while (racing.status() == RacingStatus.RACING) {
+                racing.advance();
+            }
             var actualStatus = racing.status();
 
             assertThat(actualStatus).isEqualTo(RacingStatus.FINISHED);
         }
+    }
 
-        @Test
-        void RACING_상태가_아니면_advance를_호출할_때_예외를_발생시킵니다() {
-            var racing = racing(1, false);
-            ThrowingCallable executable = racing::advance;
+    @Nested
+    class 현재_위치를_조회할_때 {
 
-            assertThatThrownBy(executable)
-                    .isInstanceOf(IllegalStateException.class);
-        }
+        @ParameterizedTest
+        @EnumSource(RacingStatus.class)
+        void 모든_경주_상태에서_현재_위치를_조회할_수_있습니다(RacingStatus status) {
+            var racing = racingIn(status);
+            var expectedPosition = Position.ZERO;
 
-        @Test
-        void 종료된_경주에서_advance를_호출하면_예외를_발생시킵니다() {
-            var racing = racing(1, false);
-            racing.start();
-            racing.advance();
-            ThrowingCallable executable = racing::advance;
+            var actualPosition = racing.positions().get(Name.of("RYAN"));
 
-            assertThatThrownBy(executable)
-                    .isInstanceOf(IllegalStateException.class);
+            assertThat(actualPosition).isEqualTo(expectedPosition);
         }
     }
 
@@ -111,7 +148,7 @@ class RacingTest {
 
         @ParameterizedTest
         @MethodSource("Domain.RacingTest#우승자_케이스")
-        void 경주가_종료되면_가장_앞선_자동차들을_반환합니다(
+        void FINISHED_상태이면_가장_앞선_자동차들을_반환합니다(
                 List<Boolean> decisions,
                 List<String> expectedNames
         ) {
@@ -123,9 +160,12 @@ class RacingTest {
             assertThat(actualNames).containsExactlyElementsOf(expectedNames);
         }
 
-        @Test
-        void 경주가_종료되지_않으면_우승자_조회시_예외를_발생시킵니다() {
-            var racing = racing(1, false);
+        @ParameterizedTest
+        @EnumSource(value = RacingStatus.class, names = {"READY", "RACING"})
+        void FINISHED가_아닌_상태에서_우승자를_조회하면_예외를_발생시킵니다(
+                RacingStatus status
+        ) {
+            var racing = racingIn(status);
             ThrowingCallable executable = racing::winners;
 
             assertThatThrownBy(executable)
@@ -144,6 +184,26 @@ class RacingTest {
         assertThat(actualPosition).isEqualTo(expectedPosition);
     }
 
+    static Stream<Arguments> 필수_구성값이_null인_케이스() {
+        var cars = new RacingCars(List.of(Name.of("RYAN")));
+        var round = Round.of(1);
+        var decider = new TestAdvanceDecider(false);
+
+        return Stream.of(
+                arguments((ThrowingCallable) () -> Racing.ready(null, round, decider)),
+                arguments((ThrowingCallable) () -> Racing.ready(cars, null, decider)),
+                arguments((ThrowingCallable) () -> Racing.ready(cars, round, null))
+        );
+    }
+
+    static Stream<Arguments> 마지막_라운드_케이스() {
+        return Stream.of(
+                arguments(1),
+                arguments(2),
+                arguments(100)
+        );
+    }
+
     static Stream<Arguments> 우승자_케이스() {
         return Stream.of(
                 arguments(
@@ -153,6 +213,10 @@ class RacingTest {
                 arguments(
                         List.of(true, true, false, false, false, false),
                         List.of("RYAN", "MUZI")
+                ),
+                arguments(
+                        List.of(false, false, false, false, false, false),
+                        List.of("RYAN", "MUZI", "춘식")
                 )
         );
     }
@@ -169,6 +233,21 @@ class RacingTest {
         );
 
         return Racing.ready(cars, Round.of(rounds), new TestAdvanceDecider(decisions));
+    }
+
+    private static Racing racingIn(RacingStatus status) {
+        var racing = racing(1, false);
+        if (status == RacingStatus.READY) {
+            return racing;
+        }
+
+        racing.start();
+        if (status == RacingStatus.RACING) {
+            return racing;
+        }
+
+        racing.advance();
+        return racing;
     }
 
     private static void finish(Racing racing) {

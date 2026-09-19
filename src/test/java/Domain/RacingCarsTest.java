@@ -35,6 +35,15 @@ class RacingCarsTest {
         }
 
         @Test
+        void 자동차_이름_목록이_null이면_예외를_발생시킵니다() {
+            List<Name> names = null;
+            ThrowingCallable executable = () -> new RacingCars(names);
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(NullPointerException.class);
+        }
+
+        @Test
         void 자동차_목록이_비어_있으면_예외를_발생시킵니다() {
             var names = List.<Name>of();
             ThrowingCallable executable = () -> new RacingCars(names);
@@ -50,6 +59,33 @@ class RacingCarsTest {
 
             assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
+    class 현재_위치를_조회할_때 {
+
+        @Test
+        void 조회한_위치_정보는_다음_라운드의_변경에_영향받지_않습니다() {
+            var ryan = Name.of("RYAN");
+            var cars = new RacingCars(List.of(ryan));
+            var initialPositions = cars.positions();
+
+            cars.advance(new TestAdvanceDecider(true));
+            var actualInitialPosition = initialPositions.get(ryan);
+
+            assertThat(actualInitialPosition).isEqualTo(Position.ZERO);
+        }
+
+        @Test
+        void 조회한_위치_정보를_수정하면_예외를_발생시킵니다() {
+            var cars = new RacingCars(names());
+            var positions = cars.positions();
+            ThrowingCallable executable =
+                    () -> positions.put(Name.of("RYAN"), Position.of(1));
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(UnsupportedOperationException.class);
         }
     }
 
@@ -73,15 +109,13 @@ class RacingCarsTest {
         }
 
         @Test
-        void 이전_위치_조회_결과는_다음_라운드의_변경에_영향받지_않습니다() {
-            var ryan = Name.of("RYAN");
-            var cars = new RacingCars(List.of(ryan));
-            var initialPositions = cars.positions();
+        void 전진_판단_정책이_null이면_예외를_발생시킵니다() {
+            var cars = new RacingCars(names());
+            AdvanceDecider decider = null;
+            ThrowingCallable executable = () -> cars.advance(decider);
 
-            cars.advance(new TestAdvanceDecider(true));
-            var actualInitialPosition = initialPositions.get(ryan);
-
-            assertThat(actualInitialPosition).isEqualTo(Position.ZERO);
+            assertThatThrownBy(executable)
+                    .isInstanceOf(NullPointerException.class);
         }
     }
 
@@ -116,6 +150,11 @@ class RacingCarsTest {
                         List.of(true, true, false, false, false, false),
                         2,
                         List.of("RYAN", "MUZI")
+                ),
+                arguments(
+                        List.of(false, false, false),
+                        1,
+                        List.of("RYAN", "MUZI", "춘식")
                 )
         );
     }
