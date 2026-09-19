@@ -20,7 +20,7 @@ class RaceTest {
 
         @ParameterizedTest
         @MethodSource("Domain.RaceTest#경주_결과_케이스")
-        void 라운드와_전진_판단이_주어지면_가장_앞선_자동차들이_우승한다(
+        void 라운드와_전진_판단이_주어지면_가장_앞선_자동차들이_우승합니다(
                 int round,
                 List<List<Boolean>> decisions,
                 List<String> expectedNames
@@ -35,7 +35,7 @@ class RaceTest {
         }
 
         @Test
-        void 100라운드에서_항상_전진하면_최종_위치가_100이_된다() {
+        void 100라운드에서_항상_전진하면_최종_위치가_100이_됩니다() {
             var car = new RacingCar(
                     new Name("pobi"),
                     new TestAdvanceDecider(Collections.nCopies(100, true))

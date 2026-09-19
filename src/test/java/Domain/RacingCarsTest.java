@@ -7,10 +7,10 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.api.Test;
 
 class RacingCarsTest {
 
@@ -18,7 +18,7 @@ class RacingCarsTest {
     class 자동차들을_전진할_때 {
 
         @Test
-        void advance를_호출하면_각_자동차가_자신의_판단_결과에_따라_전진한다() {
+        void advance를_호출하면_각_자동차가_자신의_판단_결과에_따라_전진합니다() {
             var pobi = new RacingCar(new Name("pobi"), new TestAdvanceDecider(true));
             var crong = new RacingCar(new Name("crong"), new TestAdvanceDecider(false));
             var cars = new RacingCars(List.of(pobi, crong));
@@ -35,7 +35,7 @@ class RacingCarsTest {
 
         @ParameterizedTest
         @MethodSource("Domain.RacingCarsTest#선두_자동차_케이스")
-        void 자동차별_위치가_주어지면_가장_앞선_자동차들을_반환한다(
+        void 자동차별_위치가_주어지면_가장_앞선_자동차들을_반환합니다(
                 List<List<Boolean>> decisions,
                 List<String> expectedNames
         ) {
@@ -50,7 +50,7 @@ class RacingCarsTest {
     }
 
     @Test
-    void 자동차_목록이_비어_있으면_IllegalArgumentException을_던진다() {
+    void 자동차_목록이_비어_있으면_IllegalArgumentException을_던집니다() {
         assertThatThrownBy(() -> new RacingCars(List.of()))
                 .isInstanceOf(IllegalArgumentException.class);
     }

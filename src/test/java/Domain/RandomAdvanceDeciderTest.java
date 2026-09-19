@@ -18,7 +18,7 @@ class RandomAdvanceDeciderTest {
                 "4, true",
                 "5, true"
         })
-        void 랜덤_값이_기준값의_경계이면_shouldAdvance가_예상_결과를_반환한다(
+        void 랜덤_값이_기준값의_경계이면_shouldAdvance가_예상_결과를_반환합니다(
                 int randomValue,
                 boolean expected
         ) {

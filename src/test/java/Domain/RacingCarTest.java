@@ -17,7 +17,7 @@ class RacingCarTest {
 
         @ParameterizedTest
         @MethodSource("Domain.RacingCarTest#전진_판단_케이스")
-        void 판단_결과에_따라_최종_위치가_결정된다(
+        void 판단_결과에_따라_최종_위치가_결정됩니다(
                 List<Boolean> decisions,
                 int expectedPosition
         ) {

@@ -19,7 +19,7 @@ class RoundTest {
                 "99",
                 "100"
         })
-        void 값이_1부터_100_사이면_라운드를_생성한다(int value) {
+        void 값이_1부터_100_사이면_라운드를_생성합니다(int value) {
             assertThatCode(() -> new Round(value))
                     .doesNotThrowAnyException();
         }
@@ -30,7 +30,7 @@ class RoundTest {
                 "0",
                 "101"
         })
-        void 값이_1부터_100_사이가_아니면_IllegalArgumentException을_던진다(int value) {
+        void 값이_1부터_100_사이가_아니면_IllegalArgumentException을_던집니다(int value) {
             assertThatThrownBy(() -> new Round(value))
                     .isInstanceOf(IllegalArgumentException.class);
         }
