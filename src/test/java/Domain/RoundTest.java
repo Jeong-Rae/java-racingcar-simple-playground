@@ -15,9 +15,11 @@ class RoundTest {
         @ParameterizedTest
         @CsvSource({
                 "1",
-                "2"
+                "2",
+                "99",
+                "100"
         })
-        void 값이_1_이상이면_라운드를_생성한다(int value) {
+        void 값이_1부터_100_사이면_라운드를_생성한다(int value) {
             assertThatCode(() -> new Round(value))
                     .doesNotThrowAnyException();
         }
@@ -25,9 +27,10 @@ class RoundTest {
         @ParameterizedTest
         @CsvSource({
                 "-1",
-                "0"
+                "0",
+                "101"
         })
-        void 값이_1보다_작으면_IllegalArgumentException을_던진다(int value) {
+        void 값이_1부터_100_사이가_아니면_IllegalArgumentException을_던진다(int value) {
             assertThatThrownBy(() -> new Round(value))
                     .isInstanceOf(IllegalArgumentException.class);
         }

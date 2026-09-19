@@ -3,10 +3,12 @@ package Domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,6 +32,19 @@ class RaceTest {
             assertThat(race.winners())
                     .extracting(car -> car.name().value())
                     .containsExactlyInAnyOrderElementsOf(expectedNames);
+        }
+
+        @Test
+        void 100라운드에서_항상_전진하면_최종_위치가_100이_된다() {
+            var car = new RacingCar(
+                    new Name("pobi"),
+                    new TestAdvanceDecider(Collections.nCopies(100, true))
+            );
+            var race = new Race(new RacingCars(List.of(car)));
+
+            race.run(new Round(100));
+
+            assertThat(car.position()).isEqualTo(new Position(100));
         }
     }
 

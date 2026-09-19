@@ -21,7 +21,7 @@ class PositionTest {
                 "99",
                 "100"
         })
-        void 경계_안의_값을_입력하면_위치를_생성한다(int value) {
+        void 값이_0부터_100_사이면_위치를_생성한다(int value) {
             assertThatCode(() -> new Position(value))
                     .doesNotThrowAnyException();
         }
@@ -31,7 +31,7 @@ class PositionTest {
                 "-1",
                 "101"
         })
-        void 경계를_벗어난_값을_입력하면_IllegalArgumentException을_던진다(int value) {
+        void 값이_0부터_100_사이가_아니면_IllegalArgumentException을_던진다(int value) {
             assertThatThrownBy(() -> new Position(value))
                     .isInstanceOf(IllegalArgumentException.class);
         }
@@ -54,6 +54,14 @@ class PositionTest {
             var position = Position.start().advance();
 
             assertThat(position).isEqualTo(new Position(1));
+        }
+
+        @Test
+        void 위치가_100이면_advance를_호출할_때_IllegalArgumentException을_던진다() {
+            var position = new Position(100);
+
+            assertThatThrownBy(position::advance)
+                    .isInstanceOf(IllegalArgumentException.class);
         }
     }
 }
