@@ -17,8 +17,14 @@ public final class RacingFormView {
     private final ConsoleWriter writer;
 
     public RacingFormView(ConsoleReader reader, ConsoleWriter writer) {
-        this.reader = Objects.requireNonNull(reader, "콘솔 입력기는 null일 수 없습니다.");
-        this.writer = Objects.requireNonNull(writer, "콘솔 출력기는 null일 수 없습니다.");
+        this.reader = Objects.requireNonNull(
+                reader,
+                "콘솔 입력기(ConsoleReader)는 null일 수 없습니다."
+        );
+        this.writer = Objects.requireNonNull(
+                writer,
+                "콘솔 출력기(ConsoleWriter)는 null일 수 없습니다."
+        );
     }
 
     public List<String> readCarNames() {

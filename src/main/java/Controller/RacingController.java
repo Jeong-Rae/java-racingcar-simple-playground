@@ -16,10 +16,13 @@ public final class RacingController {
     private final AdvanceDecider advanceDecider;
 
     public RacingController(RacingFormView formView, AdvanceDecider advanceDecider) {
-        this.formView = Objects.requireNonNull(formView, "경주 입력 화면은 null일 수 없습니다.");
+        this.formView = Objects.requireNonNull(
+                formView,
+                "경주 정보 입력 화면(RacingFormView)는 null일 수 없습니다."
+        );
         this.advanceDecider = Objects.requireNonNull(
                 advanceDecider,
-                "전진 여부를 판단하는 정책은 null일 수 없습니다."
+                "전진 여부 판단 정책(AdvanceDecider)은 null일 수 없습니다."
         );
     }
 
