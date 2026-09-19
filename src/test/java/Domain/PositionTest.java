@@ -1,33 +1,59 @@
 package Domain;
 
+import static Common.ExceptionAssertions.assertDoesNotThrowForEach;
+import static Common.ExceptionAssertions.assertThrowsForEach;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("Position")
 class PositionTest {
 
-    @Test
-    void 시작_위치는_ZERO이다() {
-        assertThat(Position.start()).isEqualTo(Position.ZERO);
+    @Nested
+    @DisplayName("위치를 생성할 때")
+    class Creation {
+
+        @Test
+        @DisplayName("0, 1, 99, 100을 입력하면, 위치를 생성합니다")
+        void acceptsBoundaryValues() {
+            var values = List.of(0, 1, 99, 100);
+
+            assertDoesNotThrowForEach(values, Position::new);
+        }
+
+        @Test
+        @DisplayName("-1 또는 101을 입력하면, IllegalArgumentException을 던집니다")
+        void rejectsOutsideBoundary() {
+            var values = List.of(-1, 101);
+
+            assertThrowsForEach(values, IllegalArgumentException.class, Position::new);
+        }
     }
 
-    @Test
-    void 위치는_한_칸_전진할_수_있다() {
-        var position = Position.start().advance();
+    @Nested
+    @DisplayName("시작 위치를 만들 때")
+    class Start {
 
-        assertThat(position.value()).isEqualTo(1);
+        @Test
+        @DisplayName("start를 호출하면, ZERO를 반환합니다")
+        void returnsZero() {
+            assertThat(Position.start()).isEqualTo(Position.ZERO);
+        }
     }
 
-    @Test
-    void 위치는_0보다_작을_수_없다() {
-        assertThatThrownBy(() -> new Position(-1))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+    @Nested
+    @DisplayName("위치를 전진할 때")
+    class Advance {
 
-    @Test
-    void 위치는_100보다_클_수_없다() {
-        assertThatThrownBy(() -> new Position(101))
-                .isInstanceOf(IllegalArgumentException.class);
+        @Test
+        @DisplayName("0에서 advance를 호출하면, 위치가 1이 됩니다")
+        void advancesOnePosition() {
+            var position = Position.start().advance();
+
+            assertThat(position).isEqualTo(new Position(1));
+        }
     }
 }

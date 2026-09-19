@@ -1,36 +1,61 @@
 package Domain;
 
+import static Common.ExceptionAssertions.assertDoesNotThrowForEach;
 import static Common.ExceptionAssertions.assertThrowsForEach;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("Name")
 class NameTest {
 
-    @Test
-    void 한글과_영문으로_이름을_생성한다() {
-        assertThat(new Name("pobi").value()).isEqualTo("pobi");
-        assertThat(new Name("포비").value()).isEqualTo("포비");
-    }
+    @Nested
+    @DisplayName("이름을 생성할 때")
+    class Creation {
 
-    @Test
-    void 공백_이름은_허용하지_않는다() {
-        assertThatThrownBy(() -> new Name(" "))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+        @Test
+        @DisplayName("한글과 영문을 입력하면, 입력값을 보존합니다")
+        void preservesAllowedCharacters() {
+            var values = List.of("pobi", "포비", "po비");
 
-    @Test
-    void 이름은_5자를_초과할_수_없다() {
-        assertThatThrownBy(() -> new Name("racing"))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+            values.forEach(value -> assertThat(new Name(value).value()).isEqualTo(value));
+        }
 
-    @Test
-    void 한글과_영문_외의_문자는_허용하지_않는다() {
-        var invalidNames = List.of("pobi1", "포비!", "po-bi", "포 비", "포비🙂");
+        @Test
+        @DisplayName("이름 길이가 4자 또는 5자이면, 이름을 생성합니다")
+        void acceptsLengthBoundary() {
+            var values = List.of("pobi", "pobii");
 
-        assertThrowsForEach(invalidNames, IllegalArgumentException.class, Name::new);
+            assertDoesNotThrowForEach(values, Name::new);
+        }
+
+        @Test
+        @DisplayName("이름 길이가 6자이면, IllegalArgumentException을 던집니다")
+        void rejectsLengthOverBoundary() {
+            assertThrowsForEach(
+                    List.of("pobiii"),
+                    IllegalArgumentException.class,
+                    Name::new
+            );
+        }
+
+        @Test
+        @DisplayName("이름이 비어 있거나 공백이면, IllegalArgumentException을 던집니다")
+        void rejectsBlankValues() {
+            var values = List.of("", " ", "\t");
+
+            assertThrowsForEach(values, IllegalArgumentException.class, Name::new);
+        }
+
+        @Test
+        @DisplayName("한글과 영문 외의 문자를 포함하면, IllegalArgumentException을 던집니다")
+        void rejectsUnsupportedCharacters() {
+            var values = List.of("pobi1", "포비!", "po-bi", "포 비", "포비🙂");
+
+            assertThrowsForEach(values, IllegalArgumentException.class, Name::new);
+        }
     }
 }
