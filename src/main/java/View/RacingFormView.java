@@ -9,9 +9,6 @@ import java.util.Objects;
 public final class RacingFormView {
 
     private static final String NAME_DELIMITER = ",";
-    private static final String CAR_NAMES_PROMPT =
-            "경주할 자동차 이름을 쉼표(,)로 구분해 입력해 주세요.";
-    private static final String RACE_COUNT_PROMPT = "시도할 횟수를 입력해 주세요.";
 
     private final ConsoleReader reader;
     private final ConsoleWriter writer;
@@ -28,7 +25,8 @@ public final class RacingFormView {
     }
 
     public List<String> readCarNames() {
-        writer.writeLine(CAR_NAMES_PROMPT);
+        var prompt = "경주할 자동차 이름을 쉼표(,)로 구분해 입력해 주세요.";
+        writer.writeLine(prompt);
 
         return Arrays.stream(reader.readLine().split(NAME_DELIMITER))
                 .map(String::trim)
@@ -36,7 +34,8 @@ public final class RacingFormView {
     }
 
     public int readRaceCount() {
-        writer.writeLine(RACE_COUNT_PROMPT);
+        var prompt = "시도할 횟수를 입력해 주세요.";
+        writer.writeLine(prompt);
 
         return Integer.parseInt(reader.readLine().trim());
     }
