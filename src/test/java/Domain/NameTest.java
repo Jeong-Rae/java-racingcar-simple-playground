@@ -8,10 +8,9 @@ import org.junit.jupiter.api.Test;
 class NameTest {
 
     @Test
-    void 이름을_생성한다() {
-        var name = new Name("pobi");
-
-        assertThat(name.value()).isEqualTo("pobi");
+    void 한글과_영문으로_이름을_생성한다() {
+        assertThat(new Name("pobi").value()).isEqualTo("pobi");
+        assertThat(new Name("포비").value()).isEqualTo("포비");
     }
 
     @Test
@@ -23,6 +22,14 @@ class NameTest {
     @Test
     void 이름은_5자를_초과할_수_없다() {
         assertThatThrownBy(() -> new Name("racing"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 한글과_영문_외의_문자는_허용하지_않는다() {
+        assertThatThrownBy(() -> new Name("pobi1"))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Name("포비!"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
