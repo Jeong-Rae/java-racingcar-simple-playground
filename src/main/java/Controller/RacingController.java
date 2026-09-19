@@ -9,21 +9,17 @@ import Domain.Round;
 import View.RacingFormView;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public final class RacingController {
 
     private final RacingFormView formView;
-    private final Supplier<AdvanceDecider> advanceDeciderSupplier;
+    private final AdvanceDecider advanceDecider;
 
-    public RacingController(
-            RacingFormView formView,
-            Supplier<AdvanceDecider> advanceDeciderSupplier
-    ) {
+    public RacingController(RacingFormView formView, AdvanceDecider advanceDecider) {
         this.formView = Objects.requireNonNull(formView, "레이싱 입력 뷰는 null일 수 없습니다.");
-        this.advanceDeciderSupplier = Objects.requireNonNull(
-                advanceDeciderSupplier,
-                "전진 판단 정책 생성기는 null일 수 없습니다."
+        this.advanceDecider = Objects.requireNonNull(
+                advanceDecider,
+                "전진 판단 정책은 null일 수 없습니다."
         );
     }
 
@@ -44,6 +40,6 @@ public final class RacingController {
     }
 
     private RacingCar racingCar(String name) {
-        return new RacingCar(Name.of(name), advanceDeciderSupplier.get());
+        return new RacingCar(Name.of(name), advanceDecider);
     }
 }

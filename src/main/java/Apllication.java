@@ -10,7 +10,8 @@ public final class Apllication {
 
     public static void main(String[] args) {
         var formView = new RacingFormView(ConsoleReader.system());
-        var controller = new RacingController(formView, RandomAdvanceDecider::new);
+        var decider = new RandomAdvanceDecider();
+        var controller = new RacingController(formView, decider);
 
         controller.run();
     }
