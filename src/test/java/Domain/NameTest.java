@@ -5,36 +5,30 @@ import static Common.ExceptionAssertions.assertThrowsForEach;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("Name")
 class NameTest {
 
     @Nested
-    @DisplayName("이름을 생성할 때")
-    class Creation {
+    class 이름을_생성할_때 {
 
         @Test
-        @DisplayName("한글과 영문을 입력하면, 입력값을 보존합니다")
-        void preservesAllowedCharacters() {
+        void 한글과_영문을_입력하면_입력값을_보존한다() {
             var values = List.of("pobi", "포비", "po비");
 
             values.forEach(value -> assertThat(new Name(value).value()).isEqualTo(value));
         }
 
         @Test
-        @DisplayName("이름 길이가 4자 또는 5자이면, 이름을 생성합니다")
-        void acceptsLengthBoundary() {
+        void 이름_길이가_4자_또는_5자이면_이름을_생성한다() {
             var values = List.of("pobi", "pobii");
 
             assertDoesNotThrowForEach(values, Name::new);
         }
 
         @Test
-        @DisplayName("이름 길이가 6자이면, IllegalArgumentException을 던집니다")
-        void rejectsLengthOverBoundary() {
+        void 이름_길이가_6자이면_IllegalArgumentException을_던진다() {
             assertThrowsForEach(
                     List.of("pobiii"),
                     IllegalArgumentException.class,
@@ -43,16 +37,14 @@ class NameTest {
         }
 
         @Test
-        @DisplayName("이름이 비어 있거나 공백이면, IllegalArgumentException을 던집니다")
-        void rejectsBlankValues() {
+        void 이름이_비어_있거나_공백이면_IllegalArgumentException을_던진다() {
             var values = List.of("", " ", "\t");
 
             assertThrowsForEach(values, IllegalArgumentException.class, Name::new);
         }
 
         @Test
-        @DisplayName("한글과 영문 외의 문자를 포함하면, IllegalArgumentException을 던집니다")
-        void rejectsUnsupportedCharacters() {
+        void 한글과_영문_외의_문자를_포함하면_IllegalArgumentException을_던진다() {
             var values = List.of("pobi1", "포비!", "po-bi", "포 비", "포비🙂");
 
             assertThrowsForEach(values, IllegalArgumentException.class, Name::new);

@@ -3,20 +3,16 @@ package Domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("RacingCar")
 class RacingCarTest {
 
     @Nested
-    @DisplayName("advance를 호출할 때")
-    class Advance {
+    class advance를_호출할_때 {
 
         @Test
-        @DisplayName("AdvanceDecider가 true이면, 위치가 1 증가합니다")
-        void advancesWhenDeciderAllows() {
+        void AdvanceDecider가_true이면_위치가_1_증가한다() {
             var car = new RacingCar(new Name("pobi"), new TestAdvanceDecider(true));
 
             car.advance();
@@ -25,8 +21,7 @@ class RacingCarTest {
         }
 
         @Test
-        @DisplayName("AdvanceDecider가 false이면, 위치를 유지합니다")
-        void staysWhenDeciderRejects() {
+        void AdvanceDecider가_false이면_위치를_유지한다() {
             var car = new RacingCar(new Name("pobi"), new TestAdvanceDecider(false));
 
             car.advance();
@@ -35,8 +30,7 @@ class RacingCarTest {
         }
 
         @Test
-        @DisplayName("판단 결과가 true, false, true이면, 최종 위치가 2가 됩니다")
-        void advancesAccordingToDecisions() {
+        void 판단_결과가_true_false_true이면_최종_위치가_2가_된다() {
             var car = new RacingCar(
                     new Name("pobi"),
                     new TestAdvanceDecider(List.of(true, false, true))
