@@ -14,7 +14,7 @@ class PositionTest {
 
     @Test
     void 위치는_한_칸_전진할_수_있다() {
-        var position = Position.start().move();
+        var position = Position.start().advance();
 
         assertThat(position.value()).isEqualTo(1);
     }

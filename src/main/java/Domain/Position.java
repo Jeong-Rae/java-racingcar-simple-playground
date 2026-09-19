@@ -17,7 +17,7 @@ public record Position(int value) {
         return ZERO;
     }
 
-    public Position move() {
+    public Position advance() {
         return new Position(value + 1);
     }
 }
