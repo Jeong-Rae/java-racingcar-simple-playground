@@ -1,6 +1,6 @@
 package Domain;
 
-public record Position(int value) {
+public record Position(int value) implements Comparable<Position> {
 
     public static final Position ZERO = new Position(0);
 
@@ -19,5 +19,10 @@ public record Position(int value) {
 
     public Position advance() {
         return new Position(value + 1);
+    }
+
+    @Override
+    public int compareTo(Position other) {
+        return Integer.compare(value, other.value);
     }
 }

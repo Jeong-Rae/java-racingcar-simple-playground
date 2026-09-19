@@ -27,4 +27,8 @@ public final class RacingCar {
             position = position.advance();
         }
     }
+
+    public boolean isAt(Position position) {
+        return this.position.equals(position);
+    }
 }
