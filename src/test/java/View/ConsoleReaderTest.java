@@ -12,10 +12,16 @@ class ConsoleReaderTest {
 
         @Test
         void 여러_줄을_입력하면_입력된_순서대로_한_줄씩_반환합니다() {
-            var reader = ConsoleReader.string("hello\nworld");
+            var input = "hello\nworld";
+            var expectedFirstLine = "hello";
+            var expectedSecondLine = "world";
+            var reader = ConsoleReader.string(input);
 
-            assertThat(reader.readLine()).isEqualTo("hello");
-            assertThat(reader.readLine()).isEqualTo("world");
+            var actualFirstLine = reader.readLine();
+            var actualSecondLine = reader.readLine();
+
+            assertThat(actualFirstLine).isEqualTo(expectedFirstLine);
+            assertThat(actualSecondLine).isEqualTo(expectedSecondLine);
         }
     }
 }

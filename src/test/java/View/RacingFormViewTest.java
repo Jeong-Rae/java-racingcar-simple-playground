@@ -13,11 +13,13 @@ class RacingFormViewTest {
 
         @Test
         void 쉼표로_구분된_이름을_입력하면_문자열_목록을_반환합니다() {
-            var view = new RacingFormView(ConsoleReader.string("라이언, 무지, 춘식"));
+            var input = "라이언, 무지, 춘식";
+            var expectedNames = List.of("라이언", "무지", "춘식");
+            var view = new RacingFormView(ConsoleReader.string(input));
 
-            var names = view.readCarNames();
+            var actualNames = view.readCarNames();
 
-            assertThat(names).isEqualTo(List.of("라이언", "무지", "춘식"));
+            assertThat(actualNames).isEqualTo(expectedNames);
         }
     }
 
@@ -26,11 +28,13 @@ class RacingFormViewTest {
 
         @Test
         void 숫자를_입력하면_int로_반환합니다() {
-            var view = new RacingFormView(ConsoleReader.string("5"));
+            var input = "5";
+            var expectedRaceCount = 5;
+            var view = new RacingFormView(ConsoleReader.string(input));
 
-            var raceCount = view.readRaceCount();
+            var actualRaceCount = view.readRaceCount();
 
-            assertThat(raceCount).isEqualTo(5);
+            assertThat(actualRaceCount).isEqualTo(expectedRaceCount);
         }
     }
 }
