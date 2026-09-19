@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class RacingTest {
 
@@ -39,9 +40,35 @@ class RacingTest {
             assertThat(actualCompletedRounds).isEqualTo(expectedCompletedRounds);
         }
 
-        @ParameterizedTest
-        @MethodSource("Domain.RacingTest#필수_구성값이_null인_케이스")
-        void 필수_구성값이_null이면_예외를_발생시킵니다(ThrowingCallable executable) {
+        @Test
+        void 경주_참가_자동차가_null이면_예외를_발생시킵니다() {
+            RacingCars cars = null;
+            var round = Round.of(1);
+            var decider = new TestAdvanceDecider(false);
+            ThrowingCallable executable = () -> Racing.ready(cars, round, decider);
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(NullPointerException.class);
+        }
+
+        @Test
+        void 전체_라운드가_null이면_예외를_발생시킵니다() {
+            var cars = new RacingCars(List.of(Name.of("RYAN")));
+            Round round = null;
+            var decider = new TestAdvanceDecider(false);
+            ThrowingCallable executable = () -> Racing.ready(cars, round, decider);
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(NullPointerException.class);
+        }
+
+        @Test
+        void 전진_판단_정책이_null이면_예외를_발생시킵니다() {
+            var cars = new RacingCars(List.of(Name.of("RYAN")));
+            var round = Round.of(1);
+            AdvanceDecider decider = null;
+            ThrowingCallable executable = () -> Racing.ready(cars, round, decider);
+
             assertThatThrownBy(executable)
                     .isInstanceOf(NullPointerException.class);
         }
@@ -114,7 +141,7 @@ class RacingTest {
         }
 
         @ParameterizedTest
-        @MethodSource("Domain.RacingTest#마지막_라운드_케이스")
+        @ValueSource(ints = {1, 2, 100})
         void 마지막_라운드를_완료하면_FINISHED_상태가_됩니다(int rounds) {
             var racing = racing(rounds, false);
             racing.start();
@@ -182,26 +209,6 @@ class RacingTest {
         var actualPosition = racing.positions().get(Name.of("RYAN"));
 
         assertThat(actualPosition).isEqualTo(expectedPosition);
-    }
-
-    static Stream<Arguments> 필수_구성값이_null인_케이스() {
-        var cars = new RacingCars(List.of(Name.of("RYAN")));
-        var round = Round.of(1);
-        var decider = new TestAdvanceDecider(false);
-
-        return Stream.of(
-                arguments((ThrowingCallable) () -> Racing.ready(null, round, decider)),
-                arguments((ThrowingCallable) () -> Racing.ready(cars, null, decider)),
-                arguments((ThrowingCallable) () -> Racing.ready(cars, round, null))
-        );
-    }
-
-    static Stream<Arguments> 마지막_라운드_케이스() {
-        return Stream.of(
-                arguments(1),
-                arguments(2),
-                arguments(100)
-        );
     }
 
     static Stream<Arguments> 우승자_케이스() {

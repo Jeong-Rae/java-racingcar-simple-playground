@@ -6,8 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class NameTest {
@@ -59,9 +59,9 @@ class NameTest {
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
-        @ParameterizedTest
-        @NullSource
-        void 이름이_null이면_예외를_발생시킵니다(String value) {
+        @Test
+        void 이름이_null이면_예외를_발생시킵니다() {
+            String value = null;
             ThrowingCallable executable = () -> Name.of(value);
 
             assertThatThrownBy(executable)
