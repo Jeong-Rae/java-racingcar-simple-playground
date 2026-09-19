@@ -1,8 +1,10 @@
 package Domain;
 
+import static Common.ExceptionAssertions.assertThrowsForEach;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class NameTest {
@@ -27,9 +29,8 @@ class NameTest {
 
     @Test
     void 한글과_영문_외의_문자는_허용하지_않는다() {
-        assertThatThrownBy(() -> new Name("pobi1"))
-                .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new Name("포비!"))
-                .isInstanceOf(IllegalArgumentException.class);
+        var invalidNames = List.of("pobi1", "포비!", "po-bi", "포 비", "포비🙂");
+
+        assertThrowsForEach(invalidNames, IllegalArgumentException.class, Name::new);
     }
 }
