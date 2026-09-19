@@ -23,9 +23,10 @@ public final class RacingCar {
     }
 
     public void advance() {
-        if (advanceDecider.shouldAdvance()) {
-            position = position.advance();
+        if (!advanceDecider.shouldAdvance()) {
+            return;
         }
+        position = position.advance();
     }
 
     public boolean isAt(Position position) {

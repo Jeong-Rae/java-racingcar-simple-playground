@@ -2,7 +2,7 @@ package Domain;
 
 public record Position(int value) implements Comparable<Position> {
 
-    public static final Position ZERO = new Position(0);
+    public static final Position ZERO = Position.of(0);
 
     private static final int MIN_POSITION = 0;
     private static final int MAX_POSITION = 100;
@@ -13,12 +13,16 @@ public record Position(int value) implements Comparable<Position> {
         }
     }
 
+    public static Position of(int value) {
+        return new Position(value);
+    }
+
     public static Position start() {
         return ZERO;
     }
 
     public Position advance() {
-        return new Position(value + 1);
+        return Position.of(value + 1);
     }
 
     @Override

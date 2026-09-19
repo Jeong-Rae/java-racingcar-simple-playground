@@ -10,4 +10,8 @@ public record Round(int value) {
             throw new IllegalArgumentException("라운드는 1부터 100 사이여야 합니다.");
         }
     }
+
+    public static Round of(int value) {
+        return new Round(value);
+    }
 }
