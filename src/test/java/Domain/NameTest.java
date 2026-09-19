@@ -6,9 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -34,11 +32,14 @@ class NameTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-                "라이언라",
-                "라이언라이"
+        @ValueSource(ints = {
+                1,
+                2,
+                4,
+                5
         })
-        void 이름_길이가_4자와_5자이면_이름을_생성합니다(String value) {
+        void 이름_길이가_1자부터_5자이면_이름을_생성합니다(int length) {
+            var value = "A".repeat(length);
             ThrowingCallable executable = () -> Name.of(value);
 
             assertThatCode(executable)
@@ -46,11 +47,12 @@ class NameTest {
         }
 
         @ParameterizedTest
-        @ValueSource(strings = {
-                "라이언라이언",
-                "CHOONSIK"
+        @ValueSource(ints = {
+                0,
+                6
         })
-        void 이름_길이가_5자를_초과하면_예외를_발생시킵니다(String value) {
+        void 이름_길이가_1자부터_5자_범위를_벗어나면_예외를_발생시킵니다(int length) {
+            var value = "A".repeat(length);
             ThrowingCallable executable = () -> Name.of(value);
 
             assertThatThrownBy(executable)
