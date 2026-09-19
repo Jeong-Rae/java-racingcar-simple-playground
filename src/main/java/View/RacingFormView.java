@@ -1,5 +1,7 @@
 package View;
 
+import Common.ConsoleReader;
+import Common.ConsoleWriter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -7,20 +9,29 @@ import java.util.Objects;
 public final class RacingFormView {
 
     private static final String NAME_DELIMITER = ",";
+    private static final String CAR_NAMES_PROMPT =
+            "경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)";
+    private static final String RACE_COUNT_PROMPT = "시도할 횟수는 몇 회인가요?";
 
     private final ConsoleReader reader;
+    private final ConsoleWriter writer;
 
-    public RacingFormView(ConsoleReader reader) {
+    public RacingFormView(ConsoleReader reader, ConsoleWriter writer) {
         this.reader = Objects.requireNonNull(reader, "콘솔 입력기는 null일 수 없습니다.");
+        this.writer = Objects.requireNonNull(writer, "콘솔 출력기는 null일 수 없습니다.");
     }
 
     public List<String> readCarNames() {
+        writer.writeLine(CAR_NAMES_PROMPT);
+
         return Arrays.stream(reader.readLine().split(NAME_DELIMITER))
                 .map(String::trim)
                 .toList();
     }
 
     public int readRaceCount() {
+        writer.writeLine(RACE_COUNT_PROMPT);
+
         return Integer.parseInt(reader.readLine().trim());
     }
 }
