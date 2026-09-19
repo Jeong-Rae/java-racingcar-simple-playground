@@ -7,6 +7,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,11 +24,15 @@ class RacingCarsTest {
             var ryan = new RacingCar(Name.of("RYAN"), new TestAdvanceDecider(true));
             var muzi = new RacingCar(Name.of("MUZI"), new TestAdvanceDecider(false));
             var cars = new RacingCars(List.of(ryan, muzi));
+            var expectedRyanPosition = Position.of(1);
+            var expectedMuziPosition = Position.ZERO;
 
             cars.advance();
+            var actualRyanPosition = ryan.position();
+            var actualMuziPosition = muzi.position();
 
-            assertThat(ryan.position()).isEqualTo(Position.of(1));
-            assertThat(muzi.position()).isEqualTo(Position.ZERO);
+            assertThat(actualRyanPosition).isEqualTo(expectedRyanPosition);
+            assertThat(actualMuziPosition).isEqualTo(expectedMuziPosition);
         }
     }
 
@@ -43,8 +48,9 @@ class RacingCarsTest {
             var cars = cars(decisions);
 
             decisions.getFirst().forEach(ignored -> cars.advance());
+            var actualLeaders = cars.leaders();
 
-            assertThat(cars.leaders())
+            assertThat(actualLeaders)
                     .extracting(car -> car.name().value())
                     .containsExactlyInAnyOrderElementsOf(expectedNames);
         }
@@ -52,7 +58,10 @@ class RacingCarsTest {
 
     @Test
     void 자동차_목록이_비어_있으면_예외를_발생시킵니다() {
-        assertThatThrownBy(() -> new RacingCars(List.of()))
+        var emptyCars = List.<RacingCar>of();
+        ThrowingCallable executable = () -> new RacingCars(emptyCars);
+
+        assertThatThrownBy(executable)
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

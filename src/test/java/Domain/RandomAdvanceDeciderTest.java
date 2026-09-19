@@ -24,7 +24,9 @@ class RandomAdvanceDeciderTest {
         ) {
             var decider = new RandomAdvanceDecider(new FixedRandomGenerator(randomValue));
 
-            assertThat(decider.shouldAdvance()).isEqualTo(expected);
+            var actual = decider.shouldAdvance();
+
+            assertThat(actual).isEqualTo(expected);
         }
     }
 

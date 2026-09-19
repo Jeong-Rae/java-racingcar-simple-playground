@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.stream.Stream;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -26,7 +27,11 @@ class NameTest {
                 "춘식"
         })
         void 한글과_영문_이름을_입력하면_입력값을_보존합니다(String value) {
-            assertThat(Name.of(value).value()).isEqualTo(value);
+            var expectedValue = value;
+
+            var actualValue = Name.of(value).value();
+
+            assertThat(actualValue).isEqualTo(expectedValue);
         }
 
         @ParameterizedTest
@@ -38,28 +43,36 @@ class NameTest {
                 "춘식"
         })
         void 이름_길이가_5자_이하이면_이름을_생성합니다(String value) {
-            assertThatCode(() -> Name.of(value))
+            ThrowingCallable executable = () -> Name.of(value);
+
+            assertThatCode(executable)
                     .doesNotThrowAnyException();
         }
 
         @ParameterizedTest
         @MethodSource("Domain.NameTest#길이가_5자를_초과하는_이름")
         void 이름_길이가_5자를_초과하면_예외를_발생시킵니다(String value) {
-            assertThatThrownBy(() -> Name.of(value))
+            ThrowingCallable executable = () -> Name.of(value);
+
+            assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
         @ParameterizedTest
         @MethodSource("Domain.NameTest#비어_있거나_공백인_이름")
         void 이름이_비어_있거나_공백이면_예외를_발생시킵니다(String value) {
-            assertThatThrownBy(() -> Name.of(value))
+            ThrowingCallable executable = () -> Name.of(value);
+
+            assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class);
         }
 
         @ParameterizedTest
         @MethodSource("Domain.NameTest#지원하지_않는_문자가_포함된_이름")
         void 한글과_영문_외의_문자를_포함하면_예외를_발생시킵니다(String value) {
-            assertThatThrownBy(() -> Name.of(value))
+            ThrowingCallable executable = () -> Name.of(value);
+
+            assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }

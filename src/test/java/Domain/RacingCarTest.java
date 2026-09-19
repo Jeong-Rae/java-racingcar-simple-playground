@@ -22,10 +22,12 @@ class RacingCarTest {
                 int expectedPosition
         ) {
             var car = new RacingCar(Name.of("라이언"), new TestAdvanceDecider(decisions));
+            var expected = Position.of(expectedPosition);
 
             decisions.forEach(ignored -> car.advance());
+            var actual = car.position();
 
-            assertThat(car.position()).isEqualTo(Position.of(expectedPosition));
+            assertThat(actual).isEqualTo(expected);
         }
     }
 

@@ -28,8 +28,9 @@ class RaceTest {
             var race = new Race(racingCars(decisions));
 
             race.run(Round.of(round));
+            var actualWinners = race.winners();
 
-            assertThat(race.winners())
+            assertThat(actualWinners)
                     .extracting(car -> car.name().value())
                     .containsExactlyInAnyOrderElementsOf(expectedNames);
         }
@@ -41,10 +42,12 @@ class RaceTest {
                     new TestAdvanceDecider(Collections.nCopies(100, true))
             );
             var race = new Race(new RacingCars(List.of(car)));
+            var expectedPosition = Position.of(100);
 
             race.run(Round.of(100));
+            var actualPosition = car.position();
 
-            assertThat(car.position()).isEqualTo(Position.of(100));
+            assertThat(actualPosition).isEqualTo(expectedPosition);
         }
     }
 

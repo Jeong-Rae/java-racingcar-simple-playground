@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +23,9 @@ class PositionTest {
                 "100"
         })
         void 값이_0부터_100_사이면_위치를_생성합니다(int value) {
-            assertThatCode(() -> Position.of(value))
+            ThrowingCallable executable = () -> Position.of(value);
+
+            assertThatCode(executable)
                     .doesNotThrowAnyException();
         }
 
@@ -32,7 +35,9 @@ class PositionTest {
                 "101"
         })
         void 값이_0부터_100_사이가_아니면_예외를_발생시킵니다(int value) {
-            assertThatThrownBy(() -> Position.of(value))
+            ThrowingCallable executable = () -> Position.of(value);
+
+            assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
@@ -42,7 +47,11 @@ class PositionTest {
 
         @Test
         void start를_호출하면_ZERO를_반환합니다() {
-            assertThat(Position.start()).isEqualTo(Position.ZERO);
+            var expectedPosition = Position.ZERO;
+
+            var actualPosition = Position.start();
+
+            assertThat(actualPosition).isEqualTo(expectedPosition);
         }
     }
 
@@ -51,16 +60,20 @@ class PositionTest {
 
         @Test
         void 영에서_advance를_호출하면_위치가_1이_됩니다() {
-            var position = Position.start().advance();
+            var position = Position.start();
+            var expectedPosition = Position.of(1);
 
-            assertThat(position).isEqualTo(Position.of(1));
+            var actualPosition = position.advance();
+
+            assertThat(actualPosition).isEqualTo(expectedPosition);
         }
 
         @Test
         void 위치가_100이면_advance를_호출할_때_예외를_발생시킵니다() {
             var position = Position.of(100);
+            ThrowingCallable executable = position::advance;
 
-            assertThatThrownBy(position::advance)
+            assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
