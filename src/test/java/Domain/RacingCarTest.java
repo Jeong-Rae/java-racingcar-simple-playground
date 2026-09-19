@@ -1,46 +1,41 @@
 package Domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class RacingCarTest {
 
     @Nested
     class advance를_호출할_때 {
 
-        @Test
-        void AdvanceDecider가_true이면_위치가_1_증가한다() {
-            var car = new RacingCar(new Name("pobi"), new TestAdvanceDecider(true));
+        @ParameterizedTest
+        @MethodSource("Domain.RacingCarTest#전진_판단_케이스")
+        void 판단_결과에_따라_최종_위치가_결정된다(
+                List<Boolean> decisions,
+                int expectedPosition
+        ) {
+            var car = new RacingCar(new Name("pobi"), new TestAdvanceDecider(decisions));
 
-            car.advance();
+            decisions.forEach(ignored -> car.advance());
 
-            assertThat(car.position()).isEqualTo(new Position(1));
+            assertThat(car.position()).isEqualTo(new Position(expectedPosition));
         }
+    }
 
-        @Test
-        void AdvanceDecider가_false이면_위치를_유지한다() {
-            var car = new RacingCar(new Name("pobi"), new TestAdvanceDecider(false));
-
-            car.advance();
-
-            assertThat(car.position()).isEqualTo(Position.ZERO);
-        }
-
-        @Test
-        void 판단_결과가_true_false_true이면_최종_위치가_2가_된다() {
-            var car = new RacingCar(
-                    new Name("pobi"),
-                    new TestAdvanceDecider(List.of(true, false, true))
-            );
-
-            car.advance();
-            car.advance();
-            car.advance();
-
-            assertThat(car.position()).isEqualTo(new Position(2));
-        }
+    static Stream<Arguments> 전진_판단_케이스() {
+        return Stream.of(
+                arguments(List.of(true), 1),
+                arguments(List.of(false), 0),
+                arguments(List.of(true, false, true), 2),
+                arguments(List.of(false, false, false), 0),
+                arguments(List.of(true, true, true), 3)
+        );
     }
 }

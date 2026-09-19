@@ -1,30 +1,39 @@
 package Domain;
 
-import static Common.ExceptionAssertions.assertDoesNotThrowForEach;
-import static Common.ExceptionAssertions.assertThrowsForEach;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class PositionTest {
 
     @Nested
     class 위치를_생성할_때 {
 
-        @Test
-        void 경계_안의_값을_입력하면_위치를_생성한다() {
-            var values = List.of(0, 1, 99, 100);
-
-            assertDoesNotThrowForEach(values, Position::new);
+        @ParameterizedTest
+        @CsvSource({
+                "0",
+                "1",
+                "99",
+                "100"
+        })
+        void 경계_안의_값을_입력하면_위치를_생성한다(int value) {
+            assertThatCode(() -> new Position(value))
+                    .doesNotThrowAnyException();
         }
 
-        @Test
-        void 경계를_벗어난_값을_입력하면_IllegalArgumentException을_던진다() {
-            var values = List.of(-1, 101);
-
-            assertThrowsForEach(values, IllegalArgumentException.class, Position::new);
+        @ParameterizedTest
+        @CsvSource({
+                "-1",
+                "101"
+        })
+        void 경계를_벗어난_값을_입력하면_IllegalArgumentException을_던진다(int value) {
+            assertThatThrownBy(() -> new Position(value))
+                    .isInstanceOf(IllegalArgumentException.class);
         }
     }
 
