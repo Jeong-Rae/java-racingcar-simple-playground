@@ -2,9 +2,9 @@ package Controller;
 
 import Domain.AdvanceDecider;
 import Domain.Name;
-import Domain.Race;
-import Domain.RacingCar;
+import Domain.Racing;
 import Domain.RacingCars;
+import Domain.RacingStatus;
 import Domain.Round;
 import View.RacingFormView;
 import java.util.List;
@@ -29,20 +29,19 @@ public final class RacingController {
     public void run() {
         var names = formView.readCarNames();
         var raceCount = formView.readRaceCount();
-        var race = new Race(racingCars(names));
+        var racing = Racing.ready(racingCars(names), Round.of(raceCount), advanceDecider);
 
-        race.run(Round.of(raceCount));
+        racing.start();
+        while (racing.status() == RacingStatus.RACING) {
+            racing.advance();
+        }
     }
 
     private RacingCars racingCars(List<String> names) {
-        var cars = names.stream()
-                .map(this::racingCar)
+        var participants = names.stream()
+                .map(Name::of)
                 .toList();
 
-        return new RacingCars(cars);
-    }
-
-    private RacingCar racingCar(String name) {
-        return new RacingCar(Name.of(name), advanceDecider);
+        return new RacingCars(participants);
     }
 }
