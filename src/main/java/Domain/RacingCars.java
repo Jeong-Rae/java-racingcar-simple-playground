@@ -30,6 +30,6 @@ public final class RacingCars {
         return cars.stream()
                 .map(RacingCar::position)
                 .max(Position::compareTo)
-                .orElseThrow(() -> new IllegalStateException("레이싱 자동차가 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalStateException("경주할 자동차가 존재하지 않습니다."));
     }
 }

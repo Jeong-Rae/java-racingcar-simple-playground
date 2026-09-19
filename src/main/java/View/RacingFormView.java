@@ -10,8 +10,8 @@ public final class RacingFormView {
 
     private static final String NAME_DELIMITER = ",";
     private static final String CAR_NAMES_PROMPT =
-            "경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)";
-    private static final String RACE_COUNT_PROMPT = "시도할 횟수는 몇 회인가요?";
+            "경주할 자동차 이름을 쉼표(,)로 구분해 입력해 주세요.";
+    private static final String RACE_COUNT_PROMPT = "시도할 횟수를 입력해 주세요.";
 
     private final ConsoleReader reader;
     private final ConsoleWriter writer;

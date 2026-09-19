@@ -8,7 +8,7 @@ public final class Race {
     private final RacingCars cars;
 
     public Race(RacingCars cars) {
-        this.cars = Objects.requireNonNull(cars, "자동차 컬렉션은 null일 수 없습니다.");
+        this.cars = Objects.requireNonNull(cars, "경주할 자동차 목록은 null일 수 없습니다.");
     }
 
     public void run(Round round) {

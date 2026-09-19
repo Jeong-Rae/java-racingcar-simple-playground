@@ -27,9 +27,9 @@ class RacingFormViewTest {
         }
 
         @Test
-        void 이름을_입력받으면_자동차_이름_입력_문구를_출력합니다() {
+        void 자동차_이름을_입력받기_전에_입력_안내를_출력합니다() {
             var input = "라이언";
-            var expectedOutput = "경주할 자동차 이름을 입력하세요.(이름은 쉼표(,) 기준으로 구분)"
+            var expectedOutput = "경주할 자동차 이름을 쉼표(,)로 구분해 입력해 주세요."
                     + System.lineSeparator();
             var output = new StringWriter();
             var view = view(input, output);
@@ -42,7 +42,7 @@ class RacingFormViewTest {
     }
 
     @Nested
-    class 레이싱_횟수를_입력받을_때 {
+    class 시도_횟수를_입력받을_때 {
 
         @Test
         void 숫자를_입력하면_int로_반환합니다() {
@@ -57,9 +57,9 @@ class RacingFormViewTest {
         }
 
         @Test
-        void 레이싱_횟수를_입력받으면_횟수_입력_문구를_출력합니다() {
+        void 시도_횟수를_입력받기_전에_입력_안내를_출력합니다() {
             var input = "5";
-            var expectedOutput = "시도할 횟수는 몇 회인가요?" + System.lineSeparator();
+            var expectedOutput = "시도할 횟수를 입력해 주세요." + System.lineSeparator();
             var output = new StringWriter();
             var view = view(input, output);
 

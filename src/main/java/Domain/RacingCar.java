@@ -10,7 +10,10 @@ public final class RacingCar {
 
     public RacingCar(Name name, AdvanceDecider advanceDecider) {
         this.name = Objects.requireNonNull(name, "자동차 이름은 null일 수 없습니다.");
-        this.advanceDecider = Objects.requireNonNull(advanceDecider, "전진 판단 정책은 null일 수 없습니다.");
+        this.advanceDecider = Objects.requireNonNull(
+                advanceDecider,
+                "전진 여부를 판단하는 정책은 null일 수 없습니다."
+        );
         this.position = Position.start();
     }
 
