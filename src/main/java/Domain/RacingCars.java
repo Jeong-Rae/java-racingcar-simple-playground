@@ -12,11 +12,11 @@ public final class RacingCars {
     private final Map<Name, Position> positions;
 
     public RacingCars(List<Name> names) {
-        var participants = List.copyOf(
-                Objects.requireNonNull(names, "참가 자동차 이름 목록은 null일 수 없습니다.")
-        );
+        Objects.requireNonNull(names, "참가 자동차 이름 목록은 null일 수 없습니다.");
+
+        var participants = List.copyOf(names);
         validate(participants);
-        this.positions = positionsOf(participants);
+        this.positions = initialPositionsFrom(participants);
     }
 
     public void advance(AdvanceDecider advanceDecider) {
@@ -41,12 +41,16 @@ public final class RacingCars {
         if (names.isEmpty()) {
             throw new IllegalArgumentException("자동차는 한 대 이상이어야 합니다.");
         }
-        if (new HashSet<>(names).size() != names.size()) {
+        if (hasDuplicatedNames(names)) {
             throw new IllegalArgumentException("같은 경주에 중복된 자동차 이름을 사용할 수 없습니다.");
         }
     }
 
-    private static Map<Name, Position> positionsOf(List<Name> names) {
+    private static boolean hasDuplicatedNames(List<Name> names) {
+        return new HashSet<>(names).size() != names.size();
+    }
+
+    private static Map<Name, Position> initialPositionsFrom(List<Name> names) {
         var positions = new LinkedHashMap<Name, Position>();
         names.forEach(name -> positions.put(name, Position.start()));
 
@@ -61,8 +65,6 @@ public final class RacingCars {
     }
 
     private Position maxPosition() {
-        return positions.values().stream()
-                .max(Position::compareTo)
-                .orElseThrow(() -> new IllegalStateException("경주할 자동차가 존재하지 않습니다."));
+        return Collections.max(positions.values());
     }
 }
