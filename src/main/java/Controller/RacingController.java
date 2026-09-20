@@ -43,6 +43,7 @@ public final class RacingController {
                     positionsOf(racing)
             );
         }
+        resultView.printWinners(winnerNamesOf(racing));
     }
 
     private static void requireDependencies(
@@ -82,5 +83,11 @@ public final class RacingController {
         );
 
         return positions;
+    }
+
+    private List<String> winnerNamesOf(Racing racing) {
+        return racing.winners().stream()
+                .map(Name::value)
+                .toList();
     }
 }

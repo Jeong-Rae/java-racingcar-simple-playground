@@ -1,6 +1,7 @@
 package View;
 
 import Common.ConsoleWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -29,6 +30,13 @@ public final class RacingResultView {
         positions.forEach((name, position) ->
                 writer.writeLine("%s: %s", name, POSITION_MARK.repeat(position))
         );
+    }
+
+    public void printWinners(List<String> winners) {
+        requireWinners(winners);
+
+        writer.writeLine("");
+        writer.writeLine("최종 우승자: %s", String.join(", ", winners));
     }
 
     private static void requireRound(int currentRound, int totalRound) {
@@ -67,6 +75,22 @@ public final class RacingResultView {
                 .anyMatch(position -> position < 0);
         if (hasNegativePosition) {
             throw new IllegalArgumentException("자동차 위치는 0 이상이어야 합니다.");
+        }
+    }
+
+    private static void requireWinners(List<String> winners) {
+        if (winners == null) {
+            throw new IllegalArgumentException("최종 우승자 목록은 null일 수 없습니다.");
+        }
+
+        var isEmpty = winners.isEmpty();
+        if (isEmpty) {
+            throw new IllegalArgumentException("최종 우승자는 한 명 이상이어야 합니다.");
+        }
+
+        var hasNullWinner = winners.stream().anyMatch(Objects::isNull);
+        if (hasNullWinner) {
+            throw new IllegalArgumentException("최종 우승자 이름은 null일 수 없습니다.");
         }
     }
 }

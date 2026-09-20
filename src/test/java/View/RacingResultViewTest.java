@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import Common.ConsoleWriter;
 import java.io.StringWriter;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
@@ -60,6 +61,52 @@ class RacingResultViewTest {
             assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("자동차 위치 정보는 null일 수 없습니다.");
+        }
+    }
+
+    @Nested
+    class 최종_우승자를_출력할_때 {
+
+        @Test
+        void 우승자가_한_명이면_이름을_출력합니다() {
+            var output = new StringWriter();
+            var view = new RacingResultView(ConsoleWriter.string(output));
+            var winners = List.of("라이언");
+            var expectedOutput = System.lineSeparator()
+                    + "최종 우승자: 라이언"
+                    + System.lineSeparator();
+
+            view.printWinners(winners);
+            var actualOutput = output.toString();
+
+            assertThat(actualOutput).isEqualTo(expectedOutput);
+        }
+
+        @Test
+        void 공동_우승자가_여러_명이면_쉼표로_구분해_출력합니다() {
+            var output = new StringWriter();
+            var view = new RacingResultView(ConsoleWriter.string(output));
+            var winners = List.of("라이언", "무지");
+            var expectedOutput = System.lineSeparator()
+                    + "최종 우승자: 라이언, 무지"
+                    + System.lineSeparator();
+
+            view.printWinners(winners);
+            var actualOutput = output.toString();
+
+            assertThat(actualOutput).isEqualTo(expectedOutput);
+        }
+
+        @Test
+        void 최종_우승자_목록이_null이면_예외를_발생시킵니다() {
+            var output = new StringWriter();
+            var view = new RacingResultView(ConsoleWriter.string(output));
+            List<String> winners = null;
+            ThrowingCallable executable = () -> view.printWinners(winners);
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("최종 우승자 목록은 null일 수 없습니다.");
         }
     }
 

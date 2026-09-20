@@ -2,7 +2,7 @@
 
 자동차 이름과 시도 횟수를 입력받아 경주를 구성하고, 한 라운드씩 진행하는 자동차 경주 애플리케이션입니다.
 
-입력 계층은 문자열과 기본 타입만 반환합니다. `RacingController`가 입력값을 도메인 객체로 변환하고 실행 순서를 조합하며, 도메인은 경주의 생명주기, 참가 자동차의 위치, 전진 판단과 우승자 판정을 관리합니다. 각 라운드가 끝나면 `RacingResultView`가 현재 라운드와 모든 참가 자동차의 위치를 출력합니다.
+입력 계층은 문자열과 기본 타입만 반환합니다. `RacingController`가 입력값을 도메인 객체로 변환하고 실행 순서를 조합하며, 도메인은 경주의 생명주기, 참가 자동차의 위치, 전진 판단과 우승자 판정을 관리합니다. 각 라운드가 끝나면 `RacingResultView`가 현재 라운드와 모든 참가 자동차의 위치를 출력하고, 경주가 끝나면 최종 우승자를 출력합니다.
 
 ## 패키지 구조
 
@@ -120,6 +120,6 @@ View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않�
 
 `RandomAdvanceDeciderTest`는 `FixedRandomGenerator`로 난수 값을 고정해 전진 기준을 검증합니다. `Racing`과 `RacingCars`는 `TestAdvanceDecider`에 정해진 판단 순서를 전달해 경주 결과를 재현합니다.
 
-`ConsoleReader`와 `ConsoleWriter`는 자동차 경주와 관계없는 일반 문자열로 독립적으로 테스트합니다. `RacingFormView`는 입력값 변환과 입력 안내 출력을 검증하고, `RacingResultView`는 라운드 번호와 자동차별 위치 출력 형식을 검증합니다.
+`ConsoleReader`와 `ConsoleWriter`는 자동차 경주와 관계없는 일반 문자열로 독립적으로 테스트합니다. `RacingFormView`는 입력값 변환과 입력 안내 출력을 검증하고, `RacingResultView`는 라운드 번호, 자동차별 위치와 단독 또는 공동 우승자 출력 형식을 검증합니다.
 
 `RacingController`와 `Apllication`은 객체를 조합하고 실행을 연결하는 구성 코드이므로 별도의 단위 테스트를 작성하지 않습니다.
