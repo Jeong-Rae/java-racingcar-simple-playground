@@ -2,7 +2,7 @@
 
 자동차 이름과 시도 횟수를 입력받아 경주를 구성하고, 한 라운드씩 진행하는 자동차 경주 애플리케이션입니다.
 
-입력 계층은 문자열과 기본 타입만 반환합니다. `RacingController`가 입력값을 도메인 객체로 변환하고 실행 순서를 조합하며, 도메인은 경주의 생명주기, 참가 자동차의 위치, 전진 판단과 우승자 판정을 관리합니다. 라운드별 결과 출력은 아직 연결하지 않았습니다.
+입력 계층은 문자열과 기본 타입만 반환합니다. `RacingController`가 입력값을 도메인 객체로 변환하고 실행 순서를 조합하며, 도메인은 경주의 생명주기, 참가 자동차의 위치, 전진 판단과 우승자 판정을 관리합니다. 각 라운드가 끝나면 `RacingResultView`가 현재 라운드와 모든 참가 자동차의 위치를 출력합니다.
 
 ## 패키지 구조
 
@@ -28,14 +28,14 @@ src/main/java
 ```
 
 - `Common`: 콘솔 입출력처럼 애플리케이션 전반에서 사용하는 공통 기능
-- `View`: 자동차 이름과 시도 횟수를 `List<String>`과 `int`로 반환
+- `View`: 자동차 이름과 시도 횟수를 입력받고 라운드별 경주 결과를 출력
 - `Controller`: 입력값을 도메인 객체로 변환하고 경주 실행 순서를 조합
 - `Domain`: 참가 자동차, 위치, 라운드, 전진 판단, 경주 생명주기와 우승자 판정을 관리
 - `Apllication`: 콘솔 입출력기, 전진 판단 정책과 Controller를 생성해 실행
 
 ## 실행 흐름
 
-1. `Apllication`이 `ConsoleReader`, `ConsoleWriter`, `RacingFormView`, `RandomAdvanceDecider`, `RacingController`를 생성합니다.
+1. `Apllication`이 `ConsoleReader`, `ConsoleWriter`, `RacingFormView`, `RacingResultView`, `RandomAdvanceDecider`, `RacingController`를 생성합니다.
 2. `RacingFormView`가 자동차 이름과 시도 횟수를 입력받습니다.
 3. `RacingController`가 이름을 `Name`으로 변환하고 `RacingCars`를 구성합니다.
 4. `Racing.ready()`가 참가 자동차, 전체 `Round`, 하나의 `AdvanceDecider`를 받아 `READY` 상태의 경주를 생성합니다.
@@ -44,7 +44,7 @@ src/main/java
 7. 마지막 라운드가 끝나면 `Racing`이 `FINISHED` 상태로 전환됩니다.
 8. `positions()`로 현재 위치를 조회하고, `FINISHED` 상태에서는 `winners()`로 최종 우승자를 조회할 수 있습니다.
 
-View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않습니다. 라운드별 출력을 연결할 때는 `advance()` 직후 `positions()`를 조회하고 출력 계층이 사용할 형태로 변환합니다.
+View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않습니다. `RacingController`가 `advance()` 직후 도메인 위치 정보를 `Map<String, Integer>`로 변환해 `RacingResultView`에 전달합니다.
 
 ## 도메인 책임
 
@@ -120,6 +120,6 @@ View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않�
 
 `RandomAdvanceDeciderTest`는 `FixedRandomGenerator`로 난수 값을 고정해 전진 기준을 검증합니다. `Racing`과 `RacingCars`는 `TestAdvanceDecider`에 정해진 판단 순서를 전달해 경주 결과를 재현합니다.
 
-`ConsoleReader`와 `ConsoleWriter`는 자동차 경주와 관계없는 일반 문자열로 독립적으로 테스트합니다. `RacingFormView`는 입력값 변환과 입력 안내 출력을 검증합니다.
+`ConsoleReader`와 `ConsoleWriter`는 자동차 경주와 관계없는 일반 문자열로 독립적으로 테스트합니다. `RacingFormView`는 입력값 변환과 입력 안내 출력을 검증하고, `RacingResultView`는 라운드 번호와 자동차별 위치 출력 형식을 검증합니다.
 
 `RacingController`와 `Apllication`은 객체를 조합하고 실행을 연결하는 구성 코드이므로 별도의 단위 테스트를 작성하지 않습니다.
