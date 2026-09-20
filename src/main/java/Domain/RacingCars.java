@@ -13,9 +13,9 @@ public final class RacingCars {
 
     public RacingCars(List<Name> names) {
         Objects.requireNonNull(names, "참가 자동차 이름 목록은 null일 수 없습니다.");
+        validate(names);
 
         var participants = List.copyOf(names);
-        validate(participants);
         this.positions = initialPositionsFrom(participants);
     }
 
@@ -40,6 +40,9 @@ public final class RacingCars {
     private static void validate(List<Name> names) {
         if (names.isEmpty()) {
             throw new IllegalArgumentException("자동차는 한 대 이상이어야 합니다.");
+        }
+        if (names.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("자동차 이름은 null일 수 없습니다.");
         }
         if (hasDuplicatedNames(names)) {
             throw new IllegalArgumentException("같은 경주에 중복된 자동차 이름을 사용할 수 없습니다.");

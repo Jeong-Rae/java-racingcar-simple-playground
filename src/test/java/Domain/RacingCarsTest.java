@@ -41,16 +41,18 @@ class RacingCarsTest {
             ThrowingCallable executable = () -> new RacingCars(names);
 
             assertThatThrownBy(executable)
-                    .isInstanceOf(NullPointerException.class);
+                    .isInstanceOf(NullPointerException.class)
+                    .hasMessage("참가 자동차 이름 목록은 null일 수 없습니다.");
         }
 
         @Test
-        void 자동차_이름_목록에_null이_포함되면_예외를_발생시킵니다() {
+        void 자동차_이름_목록에_null이_포함되면_명시적_예외를_발생시킵니다() {
             var names = Arrays.asList(Name.of("RYAN"), null);
             ThrowingCallable executable = () -> new RacingCars(names);
 
             assertThatThrownBy(executable)
-                    .isInstanceOf(NullPointerException.class);
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("자동차 이름은 null일 수 없습니다.");
         }
 
         @Test
