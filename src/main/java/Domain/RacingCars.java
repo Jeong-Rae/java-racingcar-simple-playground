@@ -43,18 +43,18 @@ public final class RacingCars {
             throw new IllegalArgumentException("참가 자동차 이름 목록은 null일 수 없습니다.");
         }
 
-        var empty = names.isEmpty();
-        if (empty) {
+        var isEmpty = names.isEmpty();
+        if (isEmpty) {
             throw new IllegalArgumentException("자동차는 한 대 이상이어야 합니다.");
         }
 
-        var containsNull = names.stream().anyMatch(Objects::isNull);
-        if (containsNull) {
+        var hasNullName = names.stream().anyMatch(Objects::isNull);
+        if (hasNullName) {
             throw new IllegalArgumentException("자동차 이름은 null일 수 없습니다.");
         }
 
-        var duplicated = hasDuplicatedNames(names);
-        if (duplicated) {
+        var hasDuplicateName = hasDuplicatedNames(names);
+        if (hasDuplicateName) {
             throw new IllegalArgumentException("같은 경주에 중복된 자동차 이름을 사용할 수 없습니다.");
         }
     }
@@ -71,8 +71,8 @@ public final class RacingCars {
     }
 
     private static Position advance(Position position, AdvanceDecider advanceDecider) {
-        var cannotAdvance = !advanceDecider.shouldAdvance();
-        if (cannotAdvance) {
+        var shouldStay = !advanceDecider.shouldAdvance();
+        if (shouldStay) {
             return position;
         }
         return position.advance();

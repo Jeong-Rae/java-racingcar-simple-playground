@@ -8,8 +8,8 @@ public record Position(int value) implements Comparable<Position> {
     private static final int MAX_POSITION = 100;
 
     public Position {
-        var outOfRange = value < MIN_POSITION || value > MAX_POSITION;
-        if (outOfRange) {
+        var isOutOfRange = value < MIN_POSITION || value > MAX_POSITION;
+        if (isOutOfRange) {
             throw new IllegalArgumentException("자동차 위치는 0부터 100 사이여야 합니다.");
         }
     }

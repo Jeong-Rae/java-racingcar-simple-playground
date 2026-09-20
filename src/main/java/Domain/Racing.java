@@ -73,8 +73,8 @@ public final class Racing {
     }
 
     private void finishIfCompleted() {
-        var completed = completedRounds == round.value();
-        if (completed) {
+        var isCompleted = completedRounds == round.value();
+        if (isCompleted) {
             status = RacingStatus.FINISHED;
         }
     }
