@@ -13,7 +13,7 @@ public final class RacingFormView {
     private final ConsoleWriter writer;
 
     public RacingFormView(ConsoleReader reader, ConsoleWriter writer) {
-        validate(reader, writer);
+        requireDependencies(reader, writer);
         this.reader = reader;
         this.writer = writer;
     }
@@ -34,7 +34,7 @@ public final class RacingFormView {
         return Integer.parseInt(reader.readLine().trim());
     }
 
-    private static void validate(ConsoleReader reader, ConsoleWriter writer) {
+    private static void requireDependencies(ConsoleReader reader, ConsoleWriter writer) {
         if (reader == null) {
             throw new IllegalArgumentException("콘솔 입력기(ConsoleReader)는 null일 수 없습니다.");
         }

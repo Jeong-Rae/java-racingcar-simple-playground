@@ -22,8 +22,8 @@ public final class RacingResultView {
             int totalRound,
             Map<String, Integer> positions
     ) {
-        validateRound(currentRound, totalRound);
-        validatePositions(positions);
+        requireRound(currentRound, totalRound);
+        requirePositions(positions);
 
         writer.writeLine("라운드 %d/%d", currentRound, totalRound);
         positions.forEach((name, position) ->
@@ -31,7 +31,7 @@ public final class RacingResultView {
         );
     }
 
-    private static void validateRound(int currentRound, int totalRound) {
+    private static void requireRound(int currentRound, int totalRound) {
         var isInvalidTotalRound = totalRound < 1;
         if (isInvalidTotalRound) {
             throw new IllegalArgumentException("전체 라운드는 1 이상이어야 합니다.");
@@ -43,7 +43,7 @@ public final class RacingResultView {
         }
     }
 
-    private static void validatePositions(Map<String, Integer> positions) {
+    private static void requirePositions(Map<String, Integer> positions) {
         if (positions == null) {
             throw new IllegalArgumentException("자동차 위치 정보는 null일 수 없습니다.");
         }

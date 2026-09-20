@@ -23,7 +23,7 @@ public final class RacingController {
             RacingResultView resultView,
             AdvanceDecider advanceDecider
     ) {
-        validate(formView, resultView, advanceDecider);
+        requireDependencies(formView, resultView, advanceDecider);
         this.formView = formView;
         this.resultView = resultView;
         this.advanceDecider = advanceDecider;
@@ -45,7 +45,7 @@ public final class RacingController {
         }
     }
 
-    private static void validate(
+    private static void requireDependencies(
             RacingFormView formView,
             RacingResultView resultView,
             AdvanceDecider advanceDecider

@@ -12,7 +12,7 @@ public final class RacingCars {
     private final Map<Name, Position> positions;
 
     public RacingCars(List<Name> names) {
-        validate(names);
+        requireParticipants(names);
 
         var participants = List.copyOf(names);
         this.positions = initialPositionsFrom(participants);
@@ -38,7 +38,7 @@ public final class RacingCars {
                 .toList();
     }
 
-    private static void validate(List<Name> names) {
+    private static void requireParticipants(List<Name> names) {
         if (names == null) {
             throw new IllegalArgumentException("참가 자동차 이름 목록은 null일 수 없습니다.");
         }

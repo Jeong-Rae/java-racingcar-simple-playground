@@ -12,7 +12,7 @@ public final class Racing {
     private int completedRounds;
 
     private Racing(RacingCars cars, Round round, AdvanceDecider advanceDecider) {
-        validate(cars, round, advanceDecider);
+        requireArguments(cars, round, advanceDecider);
         this.cars = cars;
         this.round = round;
         this.advanceDecider = advanceDecider;
@@ -56,7 +56,7 @@ public final class Racing {
         return completedRounds;
     }
 
-    private static void validate(
+    private static void requireArguments(
             RacingCars cars,
             Round round,
             AdvanceDecider advanceDecider
