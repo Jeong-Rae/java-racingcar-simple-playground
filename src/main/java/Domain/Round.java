@@ -6,7 +6,8 @@ public record Round(int value) {
     private static final int MAX_ROUND = 100;
 
     public Round {
-        if (value < MIN_ROUND || value > MAX_ROUND) {
+        var outOfRange = value < MIN_ROUND || value > MAX_ROUND;
+        if (outOfRange) {
             throw new IllegalArgumentException("라운드는 1부터 100 사이여야 합니다.");
         }
     }
