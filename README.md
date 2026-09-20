@@ -79,6 +79,12 @@ View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않�
 | `RACING` 상태에서만 한 라운드를 진행할 수 있습니다. | 시작 전 또는 종료 후에 위치가 변경되는 것을 방지합니다. |
 | 우승자는 `FINISHED` 상태에서만 조회할 수 있습니다. | 진행 중인 선두와 최종 우승자를 구분합니다. |
 
+### null 처리 원칙
+
+필수 인자에 `null`이 전달되면 `NullPointerException`에 맡기지 않고 입력 오류를 명시적으로 검증합니다. 잘못된 인자는 `IllegalArgumentException`을 발생시키고, 경주의 잘못된 호출 순서는 `IllegalStateException`을 발생시킵니다.
+
+`null` 검증에서 `Objects.requireNonNull()`은 사용하지 않습니다. `Objects.isNull()`처럼 `NullPointerException`을 발생시키지 않는 보조 메서드는 사용할 수 있습니다. 각 객체는 자신의 생성 조건과 입력 계약을 직접 검사하고, 도메인 또는 시스템 구성 문맥에 맞는 예외 메시지를 제공합니다.
+
 ## 테스트 수행 방식
 
 테스트는 JUnit 5와 AssertJ를 사용합니다.
