@@ -44,7 +44,19 @@ class RacingFormViewTest {
 
         @Test
         void 쉼표로_구분된_이름을_입력하면_문자열_목록을_반환합니다() {
-            var input = "라이언, 무지, 춘식";
+            var input = "라이언,무지,춘식";
+            var expectedNames = List.of("라이언", "무지", "춘식");
+            var output = new StringWriter();
+            var view = view(input, output);
+
+            var actualNames = view.readCarNames();
+
+            assertThat(actualNames).isEqualTo(expectedNames);
+        }
+
+        @Test
+        void 이름_앞뒤에_공백이_있으면_공백을_제거해_반환합니다() {
+            var input = " 라이언 , 무지 , 춘식 ";
             var expectedNames = List.of("라이언", "무지", "춘식");
             var output = new StringWriter();
             var view = view(input, output);
