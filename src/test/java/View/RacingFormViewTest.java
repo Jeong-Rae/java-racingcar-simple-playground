@@ -55,6 +55,18 @@ class RacingFormViewTest {
         }
 
         @Test
+        void 마지막에_쉼표가_있으면_빈_이름을_제거해_반환합니다() {
+            var input = "라이언,무지,";
+            var expectedNames = List.of("라이언", "무지");
+            var output = new StringWriter();
+            var view = view(input, output);
+
+            var actualNames = view.readCarNames();
+
+            assertThat(actualNames).isEqualTo(expectedNames);
+        }
+
+        @Test
         void 자동차_이름을_입력받기_전에_입력_안내를_출력합니다() {
             var input = "라이언";
             var expectedOutput = "경주할 자동차 이름을 쉼표(,)로 구분해 입력해 주세요."
