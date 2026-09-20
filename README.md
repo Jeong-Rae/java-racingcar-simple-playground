@@ -94,13 +94,12 @@ View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않�
 - `Name`: 최대 길이 5자, 길이 초과, 공백, 허용되지 않은 문자
 - `Position`: 0, 1, 99, 100과 범위를 벗어난 -1, 101
 - `Round`: 1, 2, 99, 100과 범위를 벗어난 0, 101
-- `RandomAdvanceDecider`: 전진 기준값을 중심으로 3, 4, 5
 
 `RacingCarsTest`는 참가 순서, 시작 위치, 중복 이름, 하나의 정책을 참가자에게 순서대로 적용하는 동작, 위치 스냅샷과 공동 선두를 검증합니다.
 
 `RacingTest`는 `READY → RACING → FINISHED` 상태 전이와 잘못된 호출 순서, 한 라운드 단위 진행, 100라운드 경계와 종료 후 우승자 조회를 검증합니다.
 
-랜덤 동작은 실제 난수에 의존하지 않습니다. `RandomAdvanceDeciderTest`는 `FixedRandomGenerator`로 난수 값을 고정합니다. `Racing`과 `RacingCars`는 `TestAdvanceDecider`에 정해진 판단 순서를 전달해 결과를 재현합니다.
+`Racing`과 `RacingCars`는 `TestAdvanceDecider`에 정해진 판단 순서를 전달해 경주 결과를 재현합니다.
 
 `ConsoleReader`와 `ConsoleWriter`는 자동차 경주와 관계없는 일반 문자열로 독립적으로 테스트합니다. `RacingFormView`는 입력값 변환과 입력 안내 출력을 검증합니다.
 

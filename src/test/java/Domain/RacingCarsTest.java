@@ -46,7 +46,7 @@ class RacingCarsTest {
         }
 
         @Test
-        void 자동차_이름_목록에_null이_포함되면_명시적_예외를_발생시킵니다() {
+        void 자동차_이름_목록에_null이_포함되면_예외를_발생시킵니다() {
             var names = Arrays.asList(Name.of("RYAN"), null);
             ThrowingCallable executable = () -> new RacingCars(names);
 
