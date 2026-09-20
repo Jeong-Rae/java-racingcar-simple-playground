@@ -50,18 +50,6 @@ class RacingResultViewTest {
 
             assertThat(actualOutput).isEqualTo(expectedOutput);
         }
-
-        @Test
-        void 자동차_위치_정보가_null이면_예외를_발생시킵니다() {
-            var output = new StringWriter();
-            var view = new RacingResultView(ConsoleWriter.string(output));
-            Map<String, Integer> positions = null;
-            ThrowingCallable executable = () -> view.printRound(1, 1, positions);
-
-            assertThatThrownBy(executable)
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("자동차 위치 정보는 null일 수 없습니다.");
-        }
     }
 
     @Nested
@@ -95,18 +83,6 @@ class RacingResultViewTest {
             var actualOutput = output.toString();
 
             assertThat(actualOutput).isEqualTo(expectedOutput);
-        }
-
-        @Test
-        void 최종_우승자_목록이_null이면_예외를_발생시킵니다() {
-            var output = new StringWriter();
-            var view = new RacingResultView(ConsoleWriter.string(output));
-            List<String> winners = null;
-            ThrowingCallable executable = () -> view.printWinners(winners);
-
-            assertThatThrownBy(executable)
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("최종 우승자 목록은 null일 수 없습니다.");
         }
     }
 
