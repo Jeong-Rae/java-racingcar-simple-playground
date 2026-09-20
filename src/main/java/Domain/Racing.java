@@ -11,20 +11,24 @@ public final class Racing {
     private RacingStatus status;
     private int completedRounds;
 
-    private Racing(RacingCars cars, Round round, AdvanceDecider advanceDecider) {
-        requireArguments(cars, round, advanceDecider);
-        this.cars = cars;
+    private Racing(
+            List<Name> names,
+            Round round,
+            AdvanceDecider advanceDecider
+    ) {
+        requireArguments(names, round, advanceDecider);
+        this.cars = new RacingCars(names);
         this.round = round;
         this.advanceDecider = advanceDecider;
         this.status = RacingStatus.READY;
     }
 
     public static Racing ready(
-            RacingCars cars,
+            List<Name> names,
             Round round,
             AdvanceDecider advanceDecider
     ) {
-        return new Racing(cars, round, advanceDecider);
+        return new Racing(names, round, advanceDecider);
     }
 
     public void start() {
@@ -57,12 +61,12 @@ public final class Racing {
     }
 
     private static void requireArguments(
-            RacingCars cars,
+            List<Name> names,
             Round round,
             AdvanceDecider advanceDecider
     ) {
-        if (cars == null) {
-            throw new IllegalArgumentException("경주 참가 자동차는 null일 수 없습니다.");
+        if (names == null) {
+            throw new IllegalArgumentException("경주 참가 자동차 이름 목록은 null일 수 없습니다.");
         }
         if (round == null) {
             throw new IllegalArgumentException("전체 경주 횟수는 null일 수 없습니다.");

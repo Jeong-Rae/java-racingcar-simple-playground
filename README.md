@@ -24,7 +24,8 @@ src/main/java
 │   ├── RandomAdvanceDecider.java
 │   └── Round.java
 └── View
-    └── RacingFormView.java
+    ├── RacingFormView.java
+    └── RacingResultView.java
 ```
 
 - `Common`: 콘솔 입출력처럼 애플리케이션 전반에서 사용하는 공통 기능
@@ -37,8 +38,8 @@ src/main/java
 
 1. `Apllication`이 `ConsoleReader`, `ConsoleWriter`, `RacingFormView`, `RacingResultView`, `RandomAdvanceDecider`, `RacingController`를 생성합니다.
 2. `RacingFormView`가 자동차 이름과 시도 횟수를 입력받습니다.
-3. `RacingController`가 이름을 `Name`으로 변환하고 `RacingCars`를 구성합니다.
-4. `Racing.ready()`가 참가 자동차, 전체 `Round`, 하나의 `AdvanceDecider`를 받아 `READY` 상태의 경주를 생성합니다.
+3. `RacingController`가 입력된 이름을 `Name` 목록으로 변환합니다.
+4. `Racing.ready()`가 참가 자동차 이름 목록, 전체 `Round`, 하나의 `AdvanceDecider`를 받아 `RacingCars`를 내부에서 구성하고 `READY` 상태의 경주를 생성합니다.
 5. `start()`를 호출하면 경주가 `RACING` 상태로 전환됩니다.
 6. `advance()`를 한 번 호출할 때마다 한 라운드를 진행합니다. `RacingCars`는 같은 `AdvanceDecider`를 모든 참가 자동차에 순서대로 적용합니다.
 7. 마지막 라운드가 끝나면 `Racing`이 `FINISHED` 상태로 전환됩니다.
@@ -50,16 +51,16 @@ View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않�
 
 | 객체 | 책임 |
 | --- | --- |
-| `Racing` | `READY → RACING → FINISHED` 생명주기, 전체 라운드, 완료한 라운드 수와 전진 판단 정책을 관리합니다. |
+| `Racing` | 경주의 Aggregate Root입니다. `READY → RACING → FINISHED` 생명주기, 전체 라운드, 완료한 라운드 수와 전진 판단 정책을 관리하고 경주 진행과 우승자 조회의 유일한 외부 진입점을 제공합니다. |
 | `RacingStatus` | 경주의 `READY`, `RACING`, `FINISHED` 상태를 표현합니다. |
-| `RacingCars` | 참가 순서, `Name → Position` 관계, 한 라운드 전진, 현재 위치 조회와 선두 판정을 관리합니다. |
+| `RacingCars` | `Racing` 내부에서 사용하는 package-private 도메인 객체입니다. 참가 순서, `Name → Position` 관계, 실제 위치 변경과 선두 계산을 담당합니다. |
 | `Name` | 자동차 이름의 공백 여부, 최대 길이와 허용 문자를 검증합니다. |
 | `Position` | 시작 위치, 한 칸 전진과 위치 비교를 담당합니다. |
 | `Round` | 전체 경주 횟수와 허용 범위를 표현합니다. |
 | `AdvanceDecider` | 자동차의 전진 여부를 판단하는 정책 계약입니다. |
 | `RandomAdvanceDecider` | 0부터 9까지의 난수 중 값이 4 이상일 때 전진하도록 판단합니다. |
 
-경주 생명주기는 `Racing`이 관리하고 참가자의 이름과 위치 관계는 `RacingCars`가 관리합니다. 자동차별 독립 정책이나 별도의 객체 상태가 필요하지 않으므로 기존 `Race`와 `RacingCar`는 사용하지 않습니다.
+`Racing`은 경주 Aggregate의 유일한 외부 진입점입니다. `RacingCars`는 package-private으로 제한하고 생성과 행동을 `Racing` 내부에서만 사용합니다. 따라서 경주 진행과 우승자 조회는 반드시 `Racing`의 생명주기 검사를 거칩니다. 자동차별 독립 정책이나 별도의 객체 상태가 필요하지 않으므로 기존 `Race`와 `RacingCar`는 사용하지 않습니다.
 
 `AdvanceDecider`는 난수라는 외부 불확실성을 경주 진행 로직에서 분리합니다. `Racing`은 하나의 `AdvanceDecider`를 보유하고 각 라운드에서 모든 참가 자동차에 같은 정책을 적용합니다.
 

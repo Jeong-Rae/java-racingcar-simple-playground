@@ -7,29 +7,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class RacingCars {
+final class RacingCars {
 
     private final Map<Name, Position> positions;
 
-    public RacingCars(List<Name> names) {
+    RacingCars(List<Name> names) {
         requireParticipants(names);
 
         var participants = List.copyOf(names);
         this.positions = initialPositionsFrom(participants);
     }
 
-    public void advance(AdvanceDecider advanceDecider) {
-        if (advanceDecider == null) {
-            throw new IllegalArgumentException("전진 여부 판단 정책은 null일 수 없습니다.");
-        }
+    void advance(AdvanceDecider advanceDecider) {
         positions.replaceAll((name, position) -> advance(position, advanceDecider));
     }
 
-    public Map<Name, Position> positions() {
+    Map<Name, Position> positions() {
         return Collections.unmodifiableMap(new LinkedHashMap<>(positions));
     }
 
-    public List<Name> leaders() {
+    List<Name> leaders() {
         var maxPosition = maxPosition();
 
         return positions.entrySet().stream()

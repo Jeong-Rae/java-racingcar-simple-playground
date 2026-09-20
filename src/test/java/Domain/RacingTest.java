@@ -42,23 +42,23 @@ class RacingTest {
         }
 
         @Test
-        void 경주_참가_자동차가_null이면_예외를_발생시킵니다() {
-            RacingCars cars = null;
+        void 경주_참가_자동차_이름_목록이_null이면_예외를_발생시킵니다() {
+            List<Name> names = null;
             var round = Round.of(1);
             var decider = new TestAdvanceDecider(false);
-            ThrowingCallable executable = () -> Racing.ready(cars, round, decider);
+            ThrowingCallable executable = () -> Racing.ready(names, round, decider);
 
             assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("경주 참가 자동차는 null일 수 없습니다.");
+                    .hasMessage("경주 참가 자동차 이름 목록은 null일 수 없습니다.");
         }
 
         @Test
         void 전체_라운드가_null이면_예외를_발생시킵니다() {
-            var cars = new RacingCars(List.of(Name.of("RYAN")));
+            var names = List.of(Name.of("RYAN"));
             Round round = null;
             var decider = new TestAdvanceDecider(false);
-            ThrowingCallable executable = () -> Racing.ready(cars, round, decider);
+            ThrowingCallable executable = () -> Racing.ready(names, round, decider);
 
             assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class)
@@ -67,10 +67,10 @@ class RacingTest {
 
         @Test
         void 전진_판단_정책이_null이면_예외를_발생시킵니다() {
-            var cars = new RacingCars(List.of(Name.of("RYAN")));
+            var names = List.of(Name.of("RYAN"));
             var round = Round.of(1);
             AdvanceDecider decider = null;
-            ThrowingCallable executable = () -> Racing.ready(cars, round, decider);
+            ThrowingCallable executable = () -> Racing.ready(names, round, decider);
 
             assertThatThrownBy(executable)
                     .isInstanceOf(IllegalArgumentException.class)
@@ -245,17 +245,15 @@ class RacingTest {
     }
 
     private static Racing racing(int rounds, boolean decision) {
-        var cars = new RacingCars(List.of(Name.of("RYAN")));
+        var names = List.of(Name.of("RYAN"));
 
-        return Racing.ready(cars, Round.of(rounds), new TestAdvanceDecider(decision));
+        return Racing.ready(names, Round.of(rounds), new TestAdvanceDecider(decision));
     }
 
     private static Racing racing(int rounds, List<Boolean> decisions) {
-        var cars = new RacingCars(
-                List.of(Name.of("RYAN"), Name.of("MUZI"), Name.of("춘식"))
-        );
+        var names = List.of(Name.of("RYAN"), Name.of("MUZI"), Name.of("춘식"));
 
-        return Racing.ready(cars, Round.of(rounds), new TestAdvanceDecider(decisions));
+        return Racing.ready(names, Round.of(rounds), new TestAdvanceDecider(decisions));
     }
 
     private static Racing racingIn(RacingStatus status) {

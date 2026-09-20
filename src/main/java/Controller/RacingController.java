@@ -3,7 +3,6 @@ package Controller;
 import Domain.AdvanceDecider;
 import Domain.Name;
 import Domain.Racing;
-import Domain.RacingCars;
 import Domain.RacingStatus;
 import Domain.Round;
 import View.RacingFormView;
@@ -30,9 +29,9 @@ public final class RacingController {
     }
 
     public void run() {
-        var names = formView.readCarNames();
+        var names = participantNames();
         var raceCount = formView.readRaceCount();
-        var racing = Racing.ready(racingCars(names), Round.of(raceCount), advanceDecider);
+        var racing = Racing.ready(names, Round.of(raceCount), advanceDecider);
 
         racing.start();
         while (racing.status() == RacingStatus.RACING) {
@@ -68,12 +67,10 @@ public final class RacingController {
         }
     }
 
-    private RacingCars racingCars(List<String> names) {
-        var participants = names.stream()
+    private List<Name> participantNames() {
+        return formView.readCarNames().stream()
                 .map(Name::of)
                 .toList();
-
-        return new RacingCars(participants);
     }
 
     private Map<String, Integer> positionsOf(Racing racing) {

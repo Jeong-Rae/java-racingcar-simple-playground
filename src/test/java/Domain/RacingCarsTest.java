@@ -120,16 +120,6 @@ class RacingCarsTest {
             );
         }
 
-        @Test
-        void 전진_판단_정책이_null이면_예외를_발생시킵니다() {
-            var cars = new RacingCars(names());
-            AdvanceDecider decider = null;
-            ThrowingCallable executable = () -> cars.advance(decider);
-
-            assertThatThrownBy(executable)
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("전진 여부 판단 정책은 null일 수 없습니다.");
-        }
     }
 
     @Nested
