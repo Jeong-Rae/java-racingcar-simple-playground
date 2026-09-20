@@ -1,6 +1,5 @@
 package Domain;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 public record Name(String value) {
@@ -9,7 +8,9 @@ public record Name(String value) {
     private static final Pattern ALLOWED_NAME = Pattern.compile("^[가-힣a-zA-Z]+$");
 
     public Name {
-        Objects.requireNonNull(value, "자동차 이름은 null일 수 없습니다.");
+        if (value == null) {
+            throw new IllegalArgumentException("자동차 이름은 null일 수 없습니다.");
+        }
         if (value.isBlank()) {
             throw new IllegalArgumentException("자동차 이름은 공백일 수 없습니다.");
         }

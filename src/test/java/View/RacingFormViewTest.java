@@ -1,15 +1,43 @@
 package View;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import Common.ConsoleReader;
 import Common.ConsoleWriter;
 import java.io.StringWriter;
 import java.util.List;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class RacingFormViewTest {
+
+    @Nested
+    class 경주_정보_입력_화면을_생성할_때 {
+
+        @Test
+        void 콘솔_입력기가_null이면_예외를_발생시킵니다() {
+            ConsoleReader reader = null;
+            var writer = ConsoleWriter.string(new StringWriter());
+            ThrowingCallable executable = () -> new RacingFormView(reader, writer);
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("콘솔 입력기(ConsoleReader)는 null일 수 없습니다.");
+        }
+
+        @Test
+        void 콘솔_출력기가_null이면_예외를_발생시킵니다() {
+            var reader = ConsoleReader.string("input");
+            ConsoleWriter writer = null;
+            ThrowingCallable executable = () -> new RacingFormView(reader, writer);
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("콘솔 출력기(ConsoleWriter)는 null일 수 없습니다.");
+        }
+    }
 
     @Nested
     class 자동차_이름을_입력받을_때 {

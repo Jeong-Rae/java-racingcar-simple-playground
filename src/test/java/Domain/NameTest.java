@@ -65,7 +65,8 @@ class NameTest {
             ThrowingCallable executable = () -> Name.of(value);
 
             assertThatThrownBy(executable)
-                    .isInstanceOf(NullPointerException.class);
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("자동차 이름은 null일 수 없습니다.");
         }
 
         @ParameterizedTest

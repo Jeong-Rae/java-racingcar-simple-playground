@@ -12,7 +12,6 @@ public final class RacingCars {
     private final Map<Name, Position> positions;
 
     public RacingCars(List<Name> names) {
-        Objects.requireNonNull(names, "참가 자동차 이름 목록은 null일 수 없습니다.");
         validate(names);
 
         var participants = List.copyOf(names);
@@ -20,7 +19,9 @@ public final class RacingCars {
     }
 
     public void advance(AdvanceDecider advanceDecider) {
-        Objects.requireNonNull(advanceDecider, "전진 여부 판단 정책은 null일 수 없습니다.");
+        if (advanceDecider == null) {
+            throw new IllegalArgumentException("전진 여부 판단 정책은 null일 수 없습니다.");
+        }
         positions.replaceAll((name, position) -> advance(position, advanceDecider));
     }
 
@@ -38,6 +39,9 @@ public final class RacingCars {
     }
 
     private static void validate(List<Name> names) {
+        if (names == null) {
+            throw new IllegalArgumentException("참가 자동차 이름 목록은 null일 수 없습니다.");
+        }
         if (names.isEmpty()) {
             throw new IllegalArgumentException("자동차는 한 대 이상이어야 합니다.");
         }

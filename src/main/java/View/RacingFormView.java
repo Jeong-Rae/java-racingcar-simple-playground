@@ -4,7 +4,6 @@ import Common.ConsoleReader;
 import Common.ConsoleWriter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public final class RacingFormView {
 
@@ -14,14 +13,9 @@ public final class RacingFormView {
     private final ConsoleWriter writer;
 
     public RacingFormView(ConsoleReader reader, ConsoleWriter writer) {
-        this.reader = Objects.requireNonNull(
-                reader,
-                "콘솔 입력기(ConsoleReader)는 null일 수 없습니다."
-        );
-        this.writer = Objects.requireNonNull(
-                writer,
-                "콘솔 출력기(ConsoleWriter)는 null일 수 없습니다."
-        );
+        validate(reader, writer);
+        this.reader = reader;
+        this.writer = writer;
     }
 
     public List<String> readCarNames() {
@@ -38,5 +32,14 @@ public final class RacingFormView {
         writer.writeLine(prompt);
 
         return Integer.parseInt(reader.readLine().trim());
+    }
+
+    private static void validate(ConsoleReader reader, ConsoleWriter writer) {
+        if (reader == null) {
+            throw new IllegalArgumentException("콘솔 입력기(ConsoleReader)는 null일 수 없습니다.");
+        }
+        if (writer == null) {
+            throw new IllegalArgumentException("콘솔 출력기(ConsoleWriter)는 null일 수 없습니다.");
+        }
     }
 }

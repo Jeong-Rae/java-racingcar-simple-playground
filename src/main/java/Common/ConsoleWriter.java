@@ -21,6 +21,9 @@ public final class ConsoleWriter {
     }
 
     public static ConsoleWriter string(StringWriter writer) {
+        if (writer == null) {
+            throw new IllegalArgumentException("문자열 출력기(StringWriter)는 null일 수 없습니다.");
+        }
         return new ConsoleWriter(writer);
     }
 

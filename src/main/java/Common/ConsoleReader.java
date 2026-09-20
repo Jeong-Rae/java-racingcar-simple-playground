@@ -23,6 +23,9 @@ public final class ConsoleReader {
     }
 
     public static ConsoleReader string(String input) {
+        if (input == null) {
+            throw new IllegalArgumentException("문자열 입력은 null일 수 없습니다.");
+        }
         return new ConsoleReader(new StringReader(input));
     }
 

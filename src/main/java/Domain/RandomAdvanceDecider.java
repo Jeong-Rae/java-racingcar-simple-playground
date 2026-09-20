@@ -14,6 +14,9 @@ public final class RandomAdvanceDecider implements AdvanceDecider {
     }
 
     public RandomAdvanceDecider(RandomGenerator randomGenerator) {
+        if (randomGenerator == null) {
+            throw new IllegalArgumentException("난수 생성기(RandomGenerator)는 null일 수 없습니다.");
+        }
         this.randomGenerator = randomGenerator;
     }
 

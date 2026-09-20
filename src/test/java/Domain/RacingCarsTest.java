@@ -41,7 +41,7 @@ class RacingCarsTest {
             ThrowingCallable executable = () -> new RacingCars(names);
 
             assertThatThrownBy(executable)
-                    .isInstanceOf(NullPointerException.class)
+                    .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("참가 자동차 이름 목록은 null일 수 없습니다.");
         }
 
@@ -127,7 +127,8 @@ class RacingCarsTest {
             ThrowingCallable executable = () -> cars.advance(decider);
 
             assertThatThrownBy(executable)
-                    .isInstanceOf(NullPointerException.class);
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("전진 여부 판단 정책은 null일 수 없습니다.");
         }
     }
 

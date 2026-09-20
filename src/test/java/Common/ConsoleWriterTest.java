@@ -1,12 +1,28 @@
 package Common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.StringWriter;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class ConsoleWriterTest {
+
+    @Nested
+    class 문자열_출력기를_생성할_때 {
+
+        @Test
+        void 문자열_출력기가_null이면_예외를_발생시킵니다() {
+            StringWriter output = null;
+            ThrowingCallable executable = () -> ConsoleWriter.string(output);
+
+            assertThatThrownBy(executable)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("문자열 출력기(StringWriter)는 null일 수 없습니다.");
+        }
+    }
 
     @Nested
     class 문자열을_출력할_때 {

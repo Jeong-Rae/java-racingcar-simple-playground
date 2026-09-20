@@ -2,7 +2,6 @@ package Domain;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public final class Racing {
 
@@ -13,12 +12,10 @@ public final class Racing {
     private int completedRounds;
 
     private Racing(RacingCars cars, Round round, AdvanceDecider advanceDecider) {
-        this.cars = Objects.requireNonNull(cars, "경주 참가 자동차는 null일 수 없습니다.");
-        this.round = Objects.requireNonNull(round, "전체 경주 횟수는 null일 수 없습니다.");
-        this.advanceDecider = Objects.requireNonNull(
-                advanceDecider,
-                "전진 여부 판단 정책은 null일 수 없습니다."
-        );
+        validate(cars, round, advanceDecider);
+        this.cars = cars;
+        this.round = round;
+        this.advanceDecider = advanceDecider;
         this.status = RacingStatus.READY;
     }
 
@@ -57,6 +54,22 @@ public final class Racing {
 
     public int completedRounds() {
         return completedRounds;
+    }
+
+    private static void validate(
+            RacingCars cars,
+            Round round,
+            AdvanceDecider advanceDecider
+    ) {
+        if (cars == null) {
+            throw new IllegalArgumentException("경주 참가 자동차는 null일 수 없습니다.");
+        }
+        if (round == null) {
+            throw new IllegalArgumentException("전체 경주 횟수는 null일 수 없습니다.");
+        }
+        if (advanceDecider == null) {
+            throw new IllegalArgumentException("전진 여부 판단 정책은 null일 수 없습니다.");
+        }
     }
 
     private void finishIfCompleted() {

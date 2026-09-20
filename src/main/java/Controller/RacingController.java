@@ -8,7 +8,6 @@ import Domain.RacingStatus;
 import Domain.Round;
 import View.RacingFormView;
 import java.util.List;
-import java.util.Objects;
 
 public final class RacingController {
 
@@ -16,14 +15,9 @@ public final class RacingController {
     private final AdvanceDecider advanceDecider;
 
     public RacingController(RacingFormView formView, AdvanceDecider advanceDecider) {
-        this.formView = Objects.requireNonNull(
-                formView,
-                "경주 정보 입력 화면(RacingFormView)는 null일 수 없습니다."
-        );
-        this.advanceDecider = Objects.requireNonNull(
-                advanceDecider,
-                "전진 여부 판단 정책(AdvanceDecider)은 null일 수 없습니다."
-        );
+        validate(formView, advanceDecider);
+        this.formView = formView;
+        this.advanceDecider = advanceDecider;
     }
 
     public void run() {
@@ -34,6 +28,19 @@ public final class RacingController {
         racing.start();
         while (racing.status() == RacingStatus.RACING) {
             racing.advance();
+        }
+    }
+
+    private static void validate(RacingFormView formView, AdvanceDecider advanceDecider) {
+        if (formView == null) {
+            throw new IllegalArgumentException(
+                    "경주 정보 입력 화면(RacingFormView)는 null일 수 없습니다."
+            );
+        }
+        if (advanceDecider == null) {
+            throw new IllegalArgumentException(
+                    "전진 여부 판단 정책(AdvanceDecider)은 null일 수 없습니다."
+            );
         }
     }
 
