@@ -95,7 +95,7 @@ View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않�
 
 ### null 처리
 
-필수 인자에 `null`이 전달되면 `NullPointerException`에 맡기지 않고 입력 오류를 명시적으로 검증합니다. 잘못된 인자는 `IllegalArgumentException`을 발생시키고, 경주의 잘못된 호출 순서는 `IllegalStateException`을 발생시킵니다.
+필수 인자에 `null`이 전달되면 `NullPointerException`에 맡기지 않고 입력 오류를 명시적으로 검증합니다. 전달된 값이나 인자가 유효하지 않으면 `IllegalArgumentException`을 발생시키고, 현재 객체 상태에서 수행할 수 없는 동작이면 `IllegalStateException`을 발생시킵니다.
 
 `null` 검증에는 `Objects.requireNonNull()`을 사용하지 않습니다. `Objects.isNull()`처럼 `NullPointerException`을 발생시키지 않는 보조 메서드는 사용할 수 있습니다. 각 객체는 자신의 생성 조건과 입력 계약을 직접 검사하고 문맥에 맞는 예외 메시지를 제공합니다.
 

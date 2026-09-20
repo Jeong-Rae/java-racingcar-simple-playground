@@ -66,7 +66,8 @@ class PositionTest {
             ThrowingCallable executable = position::advance;
 
             assertThatThrownBy(executable)
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("최대 위치에서는 더 이상 전진할 수 없습니다.");
         }
     }
 }

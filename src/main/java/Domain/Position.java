@@ -23,6 +23,11 @@ public record Position(int value) implements Comparable<Position> {
     }
 
     public Position advance() {
+        var isAtMaxPosition = value == MAX_POSITION;
+        if (isAtMaxPosition) {
+            throw new IllegalStateException("최대 위치에서는 더 이상 전진할 수 없습니다.");
+        }
+
         return Position.of(value + 1);
     }
 
