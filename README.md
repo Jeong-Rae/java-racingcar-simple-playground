@@ -45,14 +45,14 @@ src/main/java
 7. 마지막 라운드가 끝나면 `Racing`이 `FINISHED` 상태로 전환됩니다.
 8. `positions()`로 현재 위치를 조회하고, `FINISHED` 상태에서는 `winners()`로 최종 우승자를 조회할 수 있습니다.
 
-View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않습니다. `RacingController`가 `advance()` 직후 도메인 위치 정보를 `Map<String, Integer>`로 변환해 `RacingResultView`에 전달합니다.
+View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않습니다. `RacingController`가 `advanceIfPossible()`로 라운드를 진행한 직후 `Racing`에 현재 위치를 질의하고, 이를 `Map<String, Integer>`로 변환해 `RacingResultView`에 전달합니다.
 
 ## 도메인 책임
 
 | 객체 | 책임 |
 | --- | --- |
 | `Racing` | 경주의 Aggregate Root입니다. `READY → RACING → FINISHED` 생명주기, 전체 라운드, 완료한 라운드 수와 전진 판단 정책을 관리하고 경주 진행과 우승자 조회의 유일한 외부 진입점을 제공합니다. |
-| `RacingStatus` | 경주의 `READY`, `RACING`, `FINISHED` 상태를 표현합니다. |
+| `RacingStatus` | `Racing` 내부에서 사용하는 package-private 생명주기 상태입니다. `READY`, `RACING`, `FINISHED`를 표현합니다. |
 | `RacingCars` | `Racing` 내부에서 사용하는 package-private 도메인 객체입니다. 참가 순서, `Name → Position` 관계, 실제 위치 변경과 선두 계산을 담당합니다. |
 | `Name` | 자동차 이름의 공백 여부, 최대 길이와 허용 문자를 검증합니다. |
 | `Position` | 시작 위치, 한 칸 전진과 위치 비교를 담당합니다. |
@@ -77,7 +77,7 @@ View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않�
 | 시도 횟수는 1회 이상 100회 이하입니다. | 0회 경주를 제외하고 실행 범위의 상한을 정의합니다. |
 | 자동차 위치는 0부터 100까지입니다. | 시작 위치와 최대 시도 횟수에 따른 실제 도달 범위와 일치시킵니다. |
 | `READY` 상태에서만 경주를 시작할 수 있습니다. | 동일한 경주의 중복 시작을 방지합니다. |
-| `RACING` 상태에서만 한 라운드를 진행할 수 있습니다. | 시작 전이나 종료 후의 위치 변경을 방지합니다. |
+| `RACING` 상태에서만 한 라운드를 진행할 수 있습니다. | `advanceIfPossible()`이 상태를 내부에서 판단해 시작 전이나 종료 후의 위치 변경을 방지합니다. |
 | 우승자는 `FINISHED` 상태에서만 조회할 수 있습니다. | 진행 중인 선두와 최종 우승자를 구분합니다. |
 
 ## 코드 작성 원칙
@@ -117,7 +117,7 @@ View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않�
 - `Round`: 1, 2, 99, 100과 범위를 벗어난 0, 101
 - `RandomAdvanceDecider`: 전진 기준값을 중심으로 3, 4, 5
 
-`RacingCarsTest`는 참가 순서, 시작 위치, 중복 이름, 전진 판단 적용 순서, 위치 스냅샷과 공동 선두를 검증합니다. `RacingTest`는 상태 전이, 잘못된 호출 순서, 한 라운드 단위 진행, 100라운드 경계와 종료 후 우승자 조회를 검증합니다.
+`RacingCarsTest`는 참가 순서, 시작 위치, 중복 이름, 전진 판단 적용 순서, 위치 스냅샷과 공동 선두를 검증합니다. `RacingTest`는 시작 규칙, `advanceIfPossible()`의 진행 여부, 설정한 라운드 수만큼의 진행, 100라운드 경계와 종료 후 우승자 조회를 검증합니다.
 
 `RandomAdvanceDeciderTest`는 `FixedRandomGenerator`로 난수 값을 고정해 전진 기준을 검증합니다. `Racing`과 `RacingCars`는 `TestAdvanceDecider`에 정해진 판단 순서를 전달해 경주 결과를 재현합니다.
 
@@ -148,7 +148,7 @@ View는 `Name`, `Position`, `Round` 같은 도메인 타입을 참조하지 않�
 | Controller가 진행 가능 여부를 먼저 질의한 뒤 `advance()` 호출 | 진행 가능 여부와 실제 진행 행동이 명시적으로 분리됩니다. | Controller가 경주의 종료 조건이나 상태를 해석해 다음 행동을 결정하게 됩니다. 판단과 행동이 분리되어 `Racing`의 생명주기 규칙이 외부 orchestration에 일부 노출됩니다. |
 | `Racing.advanceIfPossible()`이 가능 여부를 판단하고 직접 진행 | 진행 조건과 상태 전이가 `Racing` 안에 응집됩니다. Controller는 `RacingStatus`나 종료 조건을 알 필요가 없습니다. | 진행할 수 없는 호출을 예외가 아닌 정상적인 제어 흐름으로 표현하므로 기존 `advance()`의 강한 상태 계약보다 실패 의미가 약해집니다. |
 
-현재는 **`advanceIfPossible()`이 내부에서 진행 가능 여부를 판단하고, 실제로 한 라운드를 진행했는지를 `boolean`으로 반환하는 방식**을 선택합니다.
+현재는 **`advanceIfPossible()`이 `RACING` 상태와 남은 라운드 여부를 함께 확인하고, 실제로 한 라운드를 진행했는지를 `boolean`으로 반환하는 방식**을 선택합니다.
 
 Controller의 반복 조건은 다음 형태를 지향합니다.
 

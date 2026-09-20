@@ -1,6 +1,6 @@
 package Domain;
 
-public enum RacingStatus {
+enum RacingStatus {
     READY,
     RACING,
     FINISHED

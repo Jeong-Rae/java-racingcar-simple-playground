@@ -3,7 +3,6 @@ package Controller;
 import Domain.AdvanceDecider;
 import Domain.Name;
 import Domain.Racing;
-import Domain.RacingStatus;
 import Domain.Round;
 import View.RacingFormView;
 import View.RacingResultView;
@@ -34,8 +33,7 @@ public final class RacingController {
         var racing = Racing.ready(names, Round.of(raceCount), advanceDecider);
 
         racing.start();
-        while (racing.status() == RacingStatus.RACING) {
-            racing.advance();
+        while (racing.advanceIfPossible()) {
             resultView.printRound(
                     racing.completedRounds(),
                     raceCount,

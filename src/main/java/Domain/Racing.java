@@ -36,11 +36,19 @@ public final class Racing {
         status = RacingStatus.RACING;
     }
 
-    public void advance() {
-        requireRacing();
+    public boolean advanceIfPossible() {
+        var isRacing = status == RacingStatus.RACING;
+        var hasRemainingRounds = completedRounds < round.value();
+        var canAdvance = isRacing && hasRemainingRounds;
+        if (!canAdvance) {
+            return false;
+        }
+
         cars.advance(advanceDecider);
         completedRounds++;
         finishIfCompleted();
+
+        return true;
     }
 
     public Map<Name, Position> positions() {
@@ -50,10 +58,6 @@ public final class Racing {
     public List<Name> winners() {
         requireFinished();
         return cars.leaders();
-    }
-
-    public RacingStatus status() {
-        return status;
     }
 
     public int completedRounds() {
@@ -86,12 +90,6 @@ public final class Racing {
     private void requireReady() {
         if (status != RacingStatus.READY) {
             throw new IllegalStateException("준비 상태의 경주만 시작할 수 있습니다.");
-        }
-    }
-
-    private void requireRacing() {
-        if (status != RacingStatus.RACING) {
-            throw new IllegalStateException("진행 중인 경주만 한 라운드 진행할 수 있습니다.");
         }
     }
 
